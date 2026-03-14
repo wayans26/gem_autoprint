@@ -74,17 +74,6 @@ class roleController extends Controller
                         'allow_print'       => $value['allow_print'] == 'true' ? 1 : 0,
                     ]);
                 }
-                activity("Role")->withProperties([
-                    'subject'   => [
-                        'type'  => role::class,
-                        'id'    => $roleId
-                    ],
-                    'causeBy'   => [
-                        'id'        => $req->users->id,
-                        'username'  => $req->users->username,
-                        'full_name' => $req->users->full_name
-                    ],
-                ])->log('Add Role :' . $req->role_name);
             });
             return responseMessage::responseMessage(1, "Success", 200);
         } catch (\Throwable $th) {
@@ -124,18 +113,6 @@ class roleController extends Controller
                         'allow_print'       => $value['allow_print'] == 'true' ? 1 : 0,
                     ]);
                 }
-
-                activity("Role")->withProperties([
-                    'subject'   => [
-                        'type'  => role::class,
-                        'id'    => $role->getKey()
-                    ],
-                    'causeBy'   => [
-                        'id'        => $req->users->id,
-                        'username'  => $req->users->username,
-                        'full_name' => $req->users->full_name
-                    ],
-                ])->log('Update Role :' . $role->role_name);
             });
             return responseMessage::responseMessage(1, "Success", 200);
         } catch (\Throwable $th) {
@@ -199,17 +176,6 @@ class roleController extends Controller
         try {
             DB::transaction(function () use ($role, $req) {
                 user_has_menu_sub_group::where('role_id', $role->id)->delete();
-                activity("Role")->withProperties([
-                    'subject'   => [
-                        'type'  => role::class,
-                        'id'    => $role->getKey()
-                    ],
-                    'causeBy'   => [
-                        'id'        => $req->users->id,
-                        'username'  => $req->users->username,
-                        'full_name' => $req->users->full_name
-                    ],
-                ])->log('Delete Role :' . $role->role_name);
                 $role->delete();
             });
             return responseMessage::responseMessage(1, "Success", 200);

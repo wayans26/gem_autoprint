@@ -54,17 +54,6 @@ class menuGroupController extends Controller
             'icon'      => $req->icon
         ]);
 
-        activity("Menu Group")->withProperties([
-            'subject'   => [
-                'type'  => menu_group::class,
-                'id'    => (string) $menuId
-            ],
-            'causeBy'   => [
-                'id'        => $req->users->id,
-                'username'  => $req->users->username,
-                'full_name' => $req->users->full_name
-            ],
-        ])->log('Add Menu Group');
 
         return responseMessage::responseMessage(1, "Success", 200);
     }
@@ -107,29 +96,6 @@ class menuGroupController extends Controller
             return responseMessage::responseMessage(0, "Menu Group Not Found", 200);
         }
 
-        activity("Menu Group")->withProperties([
-            'subject'   => [
-                'type'  => menu_group::class,
-                'id'    => (string) $menuGroup->getKey()
-            ],
-            'causeBy'   => [
-                'id'        => $req->users->id,
-                'username'  => $req->users->username,
-                'full_name' => $req->users->full_name
-            ],
-            'edit'  => [
-                'old'   => [
-                    'name'      => $menuGroup->name,
-                    'order_no'  => $menuGroup->order_no,
-                    'icon'      => $menuGroup->icon
-                ],
-                'new'   => [
-                    'name'      => $req->name,
-                    'order_no'  => $req->order_no,
-                    'icon'      => $req->icon
-                ]
-            ]
-        ])->log('Update Menu Group');
 
         $menuGroup->update([
             'name'      => $req->name,
@@ -163,17 +129,7 @@ class menuGroupController extends Controller
                     user_has_menu_sub_group::where('menu_sub_group_id', $value->id)->delete();
                     $value->delete();
                 }
-                activity("Menu Group")->withProperties([
-                    'subject'   => [
-                        'type'  => menu_group::class,
-                        'id'    => (string) $menuGroup->getKey()
-                    ],
-                    'causeBy'   => [
-                        'id'        => $req->users->id,
-                        'username'  => $req->users->username,
-                        'full_name' => $req->users->full_name
-                    ],
-                ])->log('Delete Menu Group : ' . $menuGroup->name);
+
                 $menuGroup->delete();
             });
             return responseMessage::responseMessage(1, "Success", 200);

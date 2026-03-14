@@ -33,6 +33,7 @@ use App\Http\Controllers\stokTakingController;
 use App\Http\Controllers\stokTakingMobileController;
 use App\Http\Controllers\supplierController;
 use App\Http\Controllers\userManagerController;
+use App\Http\Controllers\visitorPrint;
 use App\Http\Middleware\adminRole;
 use App\Http\Middleware\menuEditorMiddleware;
 use App\Http\Middleware\menuGroupMiddleware;
@@ -72,7 +73,6 @@ Route::prefix($version)->group(function () use ($prefixWeb, $prefixMobile) {
             Route::controller(qzController::class)->group(function () {
                 Route::get('/qz/cert', 'cert');
                 Route::post('/qz/sign', 'sign');
-                Route::post('/asset/register/data/print', 'generateDataPrint')->middleware('permission:asset_register,print');
             });
 
             Route::controller(menuGroupController::class)->group(function () {
@@ -109,6 +109,9 @@ Route::prefix($version)->group(function () use ($prefixWeb, $prefixMobile) {
                 Route::post('/user/manager/edit', 'editUserManager')->middleware('permission:user_manager,update');
                 Route::post('/user/manager/password/change', 'changePasswordUserManager')->middleware('permission:user_manager,update');
                 Route::post('/user/manager/delete', 'deleteUserManager')->middleware('permission:user_manager,delete');
+            });
+            Route::controller(visitorPrint::class)->group(function () {
+                Route::post('/visitor/print', 'printVisitor');
             });
         });
     });

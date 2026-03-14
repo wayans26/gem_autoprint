@@ -41,6 +41,13 @@ const routes = [{
         meta: {
             parent: "user_manager",
         }
+    }, {
+        path: prefix + "/visitor/print",
+        name: "visitor_print",
+        component: () => import("../Page/visitor_print.vue"),
+        meta: {
+            parent: "visitor_print",
+        }
     },
     {
         path: "/:pathMatch(.*)*",

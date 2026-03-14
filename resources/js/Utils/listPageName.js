@@ -14,6 +14,10 @@ const pageName = [{
         label: "User Manager",
         value: "user_manager"
     },
+    {
+        label: "Visitor Print",
+        value: "visitor_print"
+    },
 ];
 
 export default pageName;

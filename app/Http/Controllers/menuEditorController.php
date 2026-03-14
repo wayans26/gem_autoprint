@@ -67,18 +67,6 @@ class menuEditorController extends Controller
             'page_name'     => $req->page_name
         ]);
 
-        activity("Menu Editor")->withProperties([
-            'subject'   => [
-                'type'  => menu_sub_group::class,
-                'id'    => $menuId
-            ],
-            'causeBy'   => [
-                'id'        => $req->users->id,
-                'username'  => $req->users->username,
-                'full_name' => $req->users->full_name
-            ],
-        ])->log('Add Menu Editor :' . $req->name);
-
         return responseMessage::responseMessage(1, "Success", 200);
     }
 
@@ -127,32 +115,6 @@ class menuEditorController extends Controller
             return responseMessage::responseMessage(0, "Menu Group Not Found", 200);
         }
 
-        activity("Menu Editor")->withProperties([
-            'subject'   => [
-                'type'  => menu_sub_group::class,
-                'id'    => $menuEditor->getKey()
-            ],
-            'causeBy'   => [
-                'id'        => $req->users->id,
-                'username'  => $req->users->username,
-                'full_name' => $req->users->full_name
-            ],
-            'edit'  => [
-                'old'   => [
-                    'name'          => $menuEditor->name,
-                    'order'     => $menuEditor->order_no,
-                    'menu'      => $menuEditor->menu_group_id,
-                    'page'      => $menuEditor->page_name
-                ],
-                'new'   => [
-                    'name'      => $req->name,
-                    'order'     => $req->order_no,
-                    'menu'      => $req->menu_group_id,
-                    'page'      => $req->page_name
-                ]
-            ]
-        ])->log('Update Menu Editor :' . $menuEditor->name);
-
         $menuEditor->update([
             'name'          => $req->name,
             'order_no'      => $req->order_no,
@@ -181,18 +143,6 @@ class menuEditorController extends Controller
         }
 
         $hasPermission = user_has_menu_sub_group::where('menu_sub_group_id', $menuEditor->id)->delete();
-
-        activity("Menu Editor")->withProperties([
-            'subject'   => [
-                'type'  => menu_sub_group::class,
-                'id'    => $menuEditor->getKey()
-            ],
-            'causeBy'   => [
-                'id'        => $req->users->id,
-                'username'  => $req->users->username,
-                'full_name' => $req->users->full_name
-            ],
-        ])->log('Delete Menu Editor :' . $menuEditor->name);
 
         $menuEditor->delete();
 

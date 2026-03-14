@@ -29,4 +29,20 @@ class makeid
         }
         return $random;
     }
+
+    public static function esc($text)
+    {
+        return str_replace('"', "'", (string)$text);
+    }
+    public static function calculateCentreX($text)
+    {
+        // $pitchMap = [1 => 20.0, 2 => 17.0, 3 => 14.5, 4 => 13.0, 5 => 5.6];
+        $pithch = 14.5;
+        $dpi = 203;
+        $hmul = 2;
+        $labelWidth = 832;
+        $charWithDots = ($dpi / $pithch) * $hmul;
+        $textWithDots = strlen($text) * $charWithDots;
+        return $labelWidth - max(0, (int) round(($labelWidth - $textWithDots) / 2));
+    }
 }
