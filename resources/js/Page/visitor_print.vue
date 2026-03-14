@@ -6,8 +6,9 @@
         <div class="card-body">
             <form>
                 <input ref="barcode_field" name="barcode" type="text" class="form-control" placeholder="Barcode *"
-                    v-model="barcode" autofocus :disabled="disabled || !connected" @blur="$refs.barcode_field.focus()">
+                    v-model="barcode" autofocus :disabled="disabled || !connected">
                 </input>
+                <br>
                 <p class="text-mute">{{ status }} | {{ printer_name }}</p>
                 <p class="text-muted mb-2">
                     Scanner: {{ scannerStatus }}
@@ -31,6 +32,7 @@ import axios from 'axios';
 import swalNotif from '../Utils/swalNotif.js';
 import qz from "qz-tray";
 import notification from '../Utils/notification.js';
+import Swal from 'sweetalert2';
 
 export default {
     data() {
@@ -107,26 +109,54 @@ export default {
                 }
             }).then(async res => {
                 if (res.data.status == 1) {
-                    vm.data_print = res.data.data;
-                    await vm.print();
+                    vm.data_print = res.data.data.data_print;
+                    if (res.data.data.isPrinted == 1) {
+                        vm.globalLoader.show = false;
+                        Swal.fire({
+                            icon: "info",
+                            title: "Information",
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            text: "Do You Want To Reprint?",
+                            confirmButtonColor: "#3085d6",
+                            confirmButtonText: "Yes, Print it!",
+                            cancelButtonText: "No, cancel!",
+                            showCancelButton: true,
+                            didOpen: () => {
+                                Swal.showLoading();
+                                setTimeout(() => { Swal.hideLoading() }, 500)
+                            }
+                        }).then(async (result) => {
+                            $(".confirm").attr('disabled', 'disabled');
+                            if (result.isConfirmed) {
+                                vm.globalLoader.show = true;
+                                await vm.print();
+                            }
+                            else {
+                                this.status = `Printed Cancelled`;
+                                this.globalLoader.show = false;
+                                this.barcode = "";
+                                this.disabled = false;
+                            }
+                        });
+                    }
+                    else {
+                        await vm.print();
+                    }
                 }
                 else {
                     notification.notif_error(res.data.message);
                     vm.globalLoader.show = false;
                     vm.disabled = false;
                     vm.barcode = "";
-                    vm.$refs.barcode_field.focus();
                 }
             }).catch(err => {
                 notification.notif_error("Error Internal Server");
                 vm.globalLoader.show = false;
                 vm.disabled = false;
                 vm.barcode = "";
-                vm.$refs.barcode_field.focus();
             }).finally(function () {
-                setTimeout(() => {
-                    vm.$refs.barcode_field.focus();
-                }, 20);
+
             });
         },
         setupQzSecureOnce() {
@@ -194,7 +224,6 @@ export default {
                     // this.printer_name = "Argox CP-2140 PPLB"
                     this.cfg = qz.configs.create(this.printer_name);
                     this.connecting = false;
-                    this.$refs.barcode_field.focus();
                 }).catch((err) => {
                     swalNotif.error("Please Launch Printer First");
                     this.status = "Printer Not Connected";
@@ -238,7 +267,6 @@ export default {
             this.globalLoader.show = false;
             this.barcode = "";
             this.disabled = false;
-            this.$refs.barcode_field.focus();
         },
         focusBarcodeField() {
             this.$nextTick(() => {
@@ -263,6 +291,7 @@ export default {
             } catch (err) {
                 this.scannerError = err && err.message ? err.message : String(err);
                 this.scannerStatus = "Scanner connection failed";
+                this.disconnectScanner();
             }
         },
         async autoReconnectScanner() {
@@ -404,6 +433,37 @@ export default {
 
             });
         },
+        async disconnectScanner() {
+            this.scannerKeepReading = false;
+
+            if (this.scannerFlushTimer) {
+                clearTimeout(this.scannerFlushTimer);
+                this.scannerFlushTimer = null;
+            }
+
+            try {
+                if (this.scannerReader) {
+                    await this.scannerReader.cancel();
+                }
+            } catch (err) {
+                console.error("scannerReader.cancel error:", err);
+            }
+
+            try {
+                if (this.scannerPort) {
+                    await this.scannerPort.close();
+                }
+            } catch (err) {
+                console.error("scannerPort.close error:", err);
+            }
+
+            this.scannerReader = null;
+            this.scannerPort = null;
+            this.scannerBuffer = "";
+            this.scannerConnected = false;
+            this.scannerReading = false;
+            this.scannerStatus = "Scanner Not Connected";
+        },
 
     },
     mounted() {
@@ -419,6 +479,7 @@ export default {
     },
     beforeUnmount() {
         this.safeDiconnect();
+        this.disconnectScanner();
     }
 }
 </script>

@@ -38,6 +38,14 @@ class visitorPrint extends Controller
             'b340,135,Q,m2,s6,eM,iA,"' . makeid::esc($visitor->Barcode) . '"',
             "P1"
         ]) . "\r\n";
-        return responseMessage::responseMessageWithData(1, "Success", 200, $data_print);
+        $isPrinted = $visitor->IsPrinted;
+        $visitor->update([
+            'IsPrinted' => 1,
+            'LastCheckinLocation'   => "AP"
+        ]);
+        return responseMessage::responseMessageWithData(1, "Success", 200, array(
+            'data_print' => $data_print,
+            'isPrinted'  => $isPrinted
+        ));
     }
 }
