@@ -4,17 +4,23 @@
             <h5>Visitor Print</h5>
         </div>
         <div class="card-body">
-            <form @submit.prevent="print_barcode">
+            <form>
                 <input ref="barcode_field" name="barcode" type="text" class="form-control" placeholder="Barcode *"
-                    v-model="barcode" autofocus :disabled="disabled" @blur="$refs.barcode_field.focus()">
+                    v-model="barcode" autofocus :disabled="disabled || !connected" @blur="$refs.barcode_field.focus()">
                 </input>
                 <p class="text-mute">{{ status }} | {{ printer_name }}</p>
+                <p class="text-muted mb-2">
+                    Scanner: {{ scannerStatus }}
+                    <span v-if="scannerError"> | {{ scannerError }}</span>
+                </p>
                 <button type="button" class="btn btn-primary ml-1" @click="launchQzTray" v-show="!connected">Launch
                     Printer</button>
                 <button type="button" class="btn btn-primary ml-1" @click="connectQzTray" v-show="!connected">Connect
                     Printer</button>
-                <button type="submit" class="btn btn-primary ml-1" v-show="connected" :disabled="disabled">Test
-                    Print</button>
+                <button type="button" class="btn btn-primary ml-1" @click="connectScanner"
+                    v-show="!scannerConnected">Connect Scanner</button>
+                <!-- <button type="button" class="btn btn-primary ml-1" v-show="connected" :disabled="disabled">Test
+                    Print</button> -->
             </form>
         </div>
     </div>
@@ -61,8 +67,21 @@ export default {
                 altPrinting: false,
                 encoding: null,
                 endOfDoc: null,
-                perSpool: 1
-            }
+                perSpool: 1,
+            },
+            // Scanner (Web Serial)
+            serialSupported: typeof navigator !== "undefined" && "serial" in navigator,
+            scannerConnected: false,
+            scannerReading: false,
+            scannerStatus: "Scanner Not Connected",
+            scannerError: "",
+            scannerBaudRate: 115200,
+
+            scannerPort: null,
+            scannerReader: null,
+            scannerKeepReading: false,
+            scannerBuffer: "",
+            scannerFlushTimer: null,
         }
     },
     methods: {
@@ -93,41 +112,22 @@ export default {
                 }
                 else {
                     notification.notif_error(res.data.message);
+                    vm.globalLoader.show = false;
+                    vm.disabled = false;
+                    vm.barcode = "";
+                    vm.$refs.barcode_field.focus();
                 }
             }).catch(err => {
                 notification.notif_error("Error Internal Server");
+                vm.globalLoader.show = false;
+                vm.disabled = false;
+                vm.barcode = "";
+                vm.$refs.barcode_field.focus();
             }).finally(function () {
+                setTimeout(() => {
+                    vm.$refs.barcode_field.focus();
+                }, 20);
             });
-        },
-        updatedConfigure() {
-            this.cfg.reconfigure({
-                colorType: this.data_config.colorType,
-                copies: this.data_config.copies,
-                density: this.data_config.density,
-                duplex: this.data_config.duplex,
-                fallbackDensity: this.data_config.fallbackDensity,
-                interpolation: this.data_config.interpolation,
-                jobName: this.data_config.jobName,
-                margins: this.data_config.margins,
-                orientation: this.data_config.orientation,
-                paperThickness: this.data_config.paperThickness,
-                printerTray: this.data_config.printerTray,
-                rasterize: this.data_config.rasterize,
-                rotation: this.data_config.rotation,
-                scaleContent: this.data_config.scaleContent,
-                size: this.data_config.size,
-                units: this.data_config.units,
-                altPrinting: this.data_config.altPrinting,
-                encoding: this.data_config.encoding,
-                endOfDoc: this.data_config.endOfDoc,
-                perSpool: this.data_config.perSpool
-            });
-        },
-        getUpdateConfigure() {
-            if (this.cfg == null) {
-                cfg = qz.configs.create(null);
-            }
-            this.updatedConfigure();
         },
         setupQzSecureOnce() {
             qz.security.setCertificatePromise(function (resolve, reject) {
@@ -194,6 +194,7 @@ export default {
                     // this.printer_name = "Argox CP-2140 PPLB"
                     this.cfg = qz.configs.create(this.printer_name);
                     this.connecting = false;
+                    this.$refs.barcode_field.focus();
                 }).catch((err) => {
                     swalNotif.error("Please Launch Printer First");
                     this.status = "Printer Not Connected";
@@ -237,11 +238,177 @@ export default {
             this.globalLoader.show = false;
             this.barcode = "";
             this.disabled = false;
+            this.$refs.barcode_field.focus();
+        },
+        focusBarcodeField() {
+            this.$nextTick(() => {
+                const el = this.$refs.barcode_field;
+                if (el && !el.disabled) {
+                    el.focus();
+                }
+            });
+        },
+        async connectScanner() {
+            this.scannerError = "";
+
+            if (!this.serialSupported) {
+                this.scannerStatus = "Web Serial is not supported in this browser";
+                return;
+            }
+
+            try {
+                const port = await navigator.serial.requestPort();
+
+                await this.openScannerPort(port);
+            } catch (err) {
+                this.scannerError = err && err.message ? err.message : String(err);
+                this.scannerStatus = "Scanner connection failed";
+            }
+        },
+        async autoReconnectScanner() {
+            if (!this.serialSupported) return;
+
+            try {
+                const ports = await navigator.serial.getPorts();
+                if (ports && ports.length > 0) {
+                    await this.openScannerPort(ports[0], true);
+                }
+            } catch (err) {
+                console.error("autoReconnectScanner error:", err);
+            }
+        },
+        async openScannerPort(port, silent = false) {
+            try {
+                if (this.scannerConnected) {
+                    await this.disconnectScanner();
+                }
+
+                this.scannerPort = port;
+
+                await this.scannerPort.open({
+                    baudRate: this.scannerBaudRate,
+                    dataBits: 8,
+                    stopBits: 1,
+                    parity: "none",
+                    flowControl: "none",
+                });
+
+                this.scannerConnected = true;
+                this.scannerStatus = "Scanner Connected";
+                this.scannerKeepReading = true;
+
+                this.readScannerLoop();
+
+                if (!silent) {
+                    console.log("Scanner connected");
+                }
+            } catch (err) {
+                this.scannerError = err && err.message ? err.message : String(err);
+                this.scannerStatus = "Failed to open scanner port";
+                console.error("openScannerPort error:", err);
+            }
+        },
+
+        async readScannerLoop() {
+            if (!this.scannerPort || !this.scannerPort.readable) return;
+
+            this.scannerReading = true;
+            const decoder = new TextDecoder();
+
+            try {
+                while (this.scannerPort && this.scannerPort.readable && this.scannerKeepReading) {
+                    this.scannerReader = this.scannerPort.readable.getReader();
+
+                    try {
+                        while (this.scannerKeepReading) {
+                            const { value, done } = await this.scannerReader.read();
+
+                            if (done) break;
+
+                            if (value) {
+                                const text = decoder.decode(value, { stream: true });
+                                if (text) {
+                                    this.handleScannerChunk(text);
+                                }
+                            }
+                        }
+                    } finally {
+                        if (this.scannerReader) {
+                            this.scannerReader.releaseLock();
+                            this.scannerReader = null;
+                        }
+                    }
+                }
+
+                const tail = decoder.decode();
+                if (tail) {
+                    this.handleScannerChunk(tail);
+                }
+            } catch (err) {
+                if (this.scannerKeepReading) {
+                    this.scannerError = err && err.message ? err.message : String(err);
+                    this.scannerStatus = "Scanner read error";
+                }
+                console.error("readScannerLoop error:", err);
+            } finally {
+                this.scannerReading = false;
+            }
+        },
+
+        handleScannerChunk(text) {
+            this.scannerBuffer += text;
+
+            const normalized = this.scannerBuffer
+                .replace(/\r\n/g, "\n")
+                .replace(/\r/g, "\n");
+
+            const parts = normalized.split("\n");
+            this.scannerBuffer = parts.pop() || "";
+
+            for (const part of parts) {
+                this.applyScannedBarcode(part);
+            }
+
+            this.scheduleScannerFlush();
+        },
+
+        scheduleScannerFlush() {
+            if (this.scannerFlushTimer) {
+                clearTimeout(this.scannerFlushTimer);
+            }
+
+            this.scannerFlushTimer = setTimeout(() => {
+                const value = (this.scannerBuffer || "").trim();
+                if (value) {
+                    this.applyScannedBarcode(value);
+                }
+                this.scannerBuffer = "";
+            }, 50);
+        },
+        applyScannedBarcode(raw) {
+            const code = String(raw || "").trim();
+            if (!code) return;
+
+            this.barcode = code;
+
+            this.$nextTick(() => {
+                this.focusBarcodeField();
+
+                // OPTIONAL:
+                // Auto print right after successful scan
+                // Uncomment if you want direct scan -> print
+
+                if (this.connected && !this.disabled) {
+                    this.print_barcode();
+                }
+
+            });
         },
 
     },
     mounted() {
         this.setupQzSecureOnce();
+        this.autoReconnectScanner();
         if (qz.websocket.isActive()) {
             this.connected = true;
             this.connecting = false;

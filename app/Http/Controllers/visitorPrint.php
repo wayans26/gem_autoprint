@@ -35,7 +35,7 @@ class visitorPrint extends Controller
             'A' . makeid::calculateCentreX($visitor->Name) . ',470,2,3,2,2,N,"' . makeid::esc($visitor->Name) . '"',
             'A' . makeid::calculateCentreX($visitor->JobTitle) . ',420,2,3,2,2,N,"' . makeid::esc($visitor->JobTitle) . '"',
             'A' . makeid::calculateCentreX($visitor->Company) . ',370,2,3,2,2,N,"' . makeid::esc($visitor->Company) . '"',
-            'b310,135,Q,m2,s6,eM,iA,"' . makeid::esc($visitor->Barcode) . '"',
+            'b340,135,Q,m2,s6,eM,iA,"' . makeid::esc($visitor->Barcode) . '"',
             "P1"
         ]) . "\r\n";
         return responseMessage::responseMessageWithData(1, "Success", 200, $data_print);
