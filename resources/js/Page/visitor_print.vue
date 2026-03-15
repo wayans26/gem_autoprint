@@ -40,6 +40,12 @@ export default {
             disabled: false,
             loading: true,
             barcode: "",
+            // Audio
+            audio_validation: {
+                validate: new Audio('/sound/validation.mp3'),
+                success: new Audio('/sound/validation_done.mp3'),
+                fail: new Audio('/sound/validation_fail.mp3'),
+            },
 
             // Printer
             status: "Printer Not Connected",
@@ -101,6 +107,7 @@ export default {
             const vm = this;
             vm.globalLoader.show = true;
             vm.disabled = true;
+            vm.audio_validation.validate.play();
             axios.post("/api/v1/web/visitor/print", {
                 'barcode': vm.barcode,
             }, {
@@ -110,6 +117,11 @@ export default {
             }).then(async res => {
                 if (res.data.status == 1) {
                     vm.data_print = res.data.data.data_print;
+                    if (!vm.audio_validation.validate.paused && !vm.audio_validation.validate.ended) {
+                        vm.audio_validation.validate.pause();
+                        vm.audio_validation.validate.currentTime = 0;
+                    }
+                    vm.audio_validation.success.play();
                     if (res.data.data.isPrinted == 1) {
                         vm.globalLoader.show = false;
                         Swal.fire({
@@ -124,7 +136,7 @@ export default {
                             showCancelButton: true,
                             didOpen: () => {
                                 Swal.showLoading();
-                                setTimeout(() => { Swal.hideLoading() }, 500)
+                                setTimeout(() => { Swal.hideLoading() }, 100)
                             }
                         }).then(async (result) => {
                             $(".confirm").attr('disabled', 'disabled');
@@ -155,6 +167,11 @@ export default {
                 vm.globalLoader.show = false;
                 vm.disabled = false;
                 vm.barcode = "";
+                if (!vm.audio_validation.validate.paused && !vm.audio_validation.validate.ended) {
+                    vm.audio_validation.validate.pause();
+                    vm.audio_validation.validate.currentTime = 0;
+                }
+                vm.audio_validation.fail.play();
             }).finally(function () {
 
             });
