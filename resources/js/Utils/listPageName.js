@@ -18,6 +18,10 @@ const pageName = [{
         label: "Visitor Print",
         value: "visitor_print"
     },
+    {
+        label: "Visitor Registrasi",
+        value: "visitor_registrasi"
+    },
 ];
 
 export default pageName;

@@ -50,6 +50,14 @@ const routes = [{
         }
     },
     {
+        path: prefix + "/visitor/registrasi",
+        name: "visitor_registrasi",
+        component: () => import("../Page/visitor_registration.vue"),
+        meta: {
+            parent: "visitor_registrasi",
+        }
+    },
+    {
         path: "/:pathMatch(.*)*",
         name: "notFound",
         component: () => import("../components/notFound.vue"),
