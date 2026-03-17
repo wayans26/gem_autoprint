@@ -1,37 +1,11 @@
 <?php
 
-use App\Http\Controllers\assetByLocationController;
-use App\Http\Controllers\assetCheckoutCheckinController;
-use App\Http\Controllers\assetCheckoutCheckinMobileController;
-use App\Http\Controllers\assetDatafileController;
-use App\Http\Controllers\assetDisposalController;
-use App\Http\Controllers\assetGroupController;
-use App\Http\Controllers\assetLocationController;
-use App\Http\Controllers\assetMovementController;
-use App\Http\Controllers\assetRegisterController;
-use App\Http\Controllers\assetRegisterMobileController;
-use App\Http\Controllers\assetStatusController;
-use App\Http\Controllers\bussinessUnitController;
-use App\Http\Controllers\companyProfileController;
-use App\Http\Controllers\currencyController;
-use App\Http\Controllers\dashboardContrroller;
-use App\Http\Controllers\departmentController;
-use App\Http\Controllers\divisionController;
-use App\Http\Controllers\employeeController;
-use App\Http\Controllers\importController;
-use App\Http\Controllers\licensePermitController;
-use App\Http\Controllers\logController;
 use App\Http\Controllers\loginController;
-use App\Http\Controllers\measurementController;
 use App\Http\Controllers\menuEditorController;
 use App\Http\Controllers\menuGroupController;
 use App\Http\Controllers\qzController;
-use App\Http\Controllers\reportController;
-use App\Http\Controllers\resetPasswordController;
+use App\Http\Controllers\registerController;
 use App\Http\Controllers\roleController;
-use App\Http\Controllers\stokTakingController;
-use App\Http\Controllers\stokTakingMobileController;
-use App\Http\Controllers\supplierController;
 use App\Http\Controllers\userManagerController;
 use App\Http\Controllers\visitorPrint;
 use App\Http\Middleware\adminRole;
@@ -111,7 +85,13 @@ Route::prefix($version)->group(function () use ($prefixWeb, $prefixMobile) {
                 Route::post('/user/manager/delete', 'deleteUserManager')->middleware('permission:user_manager,delete');
             });
             Route::controller(visitorPrint::class)->group(function () {
-                Route::post('/visitor/print', 'printVisitor');
+                Route::post('/visitor/print', 'printVisitor')->middleware('permission:visitor_print,create');
+            });
+
+            Route::controller(registerController::class)->group(function () {
+                Route::post('/register/data/get', 'getRegisterData')->middleware('permission:visitor_registrasi,view');
+                Route::post('/register/sub/exhibitions/get', 'getSubExhibitions')->middleware('permission:visitor_registrasi,view');
+                Route::post('/register/add', 'registrasi')->middleware('permission:visitor_registrasi,create');
             });
         });
     });

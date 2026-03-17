@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class activity_history extends Model
 {
-    protected $connection = 'mysql';
+    protected $connection = 'visitor';
     protected $table = 'activity_histories';
     public $incrementing = true;
     protected $primaryKey = 'id';

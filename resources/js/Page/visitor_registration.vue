@@ -4,19 +4,69 @@
             <h5>Visitor Registration Manual</h5>
         </div>
         <div class="card-body">
-            <form>
-                <div>
-                    <input ref="barcode_field" name="barcode" type="text" class="form-control" placeholder="Barcode *"
-                        v-model="barcode">
+            <Form :validation-schema="validate" @submit="registrasi">
+                <div v-show="connected">
+                    <div class="form-group">
+                        <label for="input-1">Exhibitions</label>
+                        <v-select class="form-control" placeholder="Select an Exhibitions" :options="list_exhibitions"
+                            label="label" :reduce="option => option.value" v-model="exhibitions"
+                            @option:selected="getSubExhibitions" :clearable="false"></v-select>
+                    </div>
+                    <div class="form-group">
+                        <label for="input-1">Sub Exhibitions</label>
+                        <v-select class="form-control" placeholder="Select an Sub Exhibitions"
+                            :options="list_sub_exhibitions" label="label" :reduce="option => option.value"
+                            v-model="sub_exhibitions" :clearable="false"></v-select>
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Name *</label>
+                        <Field name="name" v-slot="{ field }" v-model="name">
+                            <input v-bind="field" ref="name_visitor" class="form-control" id="name"
+                                placeholder="Name *" />
+                        </Field>
+                        <ErrorMessage style="color: red;" name="name" />
+                    </div>
+                    <div class="form-group">
+                        <label for="title">Title *</label>
+                        <Field name="title" type="text" class="form-control" id="title" placeholder="Title *"
+                            v-model="title">
+                        </Field>
+                        <ErrorMessage style="color: red;" name="title" />
+                    </div>
+                    <div class="form-group">
+                        <label for="company">Company *</label>
+                        <Field name="company" type="text" class="form-control" id="company" placeholder="Company *"
+                            v-model="company">
+                        </Field>
+                        <ErrorMessage style="color: red;" name="company" />
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <Field name="email" type="text" class="form-control" id="email" placeholder="Email *"
+                            v-model="email">
+                        </Field>
+                        <ErrorMessage style="color: red;" name="email" />
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone *</label>
+                        <Field name="phone" type="text" class="form-control" id="phone" placeholder="Phone *"
+                            v-model="phone">
+                        </Field>
+                        <ErrorMessage style="color: red;" name="phone" />
+                    </div>
+                    <div class="form-group">
+                        <label for="input-1">Country</label>
+                        <v-select class="form-control" placeholder="Select an Country" :options="list_country"
+                            label="label" :reduce="option => option.value" v-model="country"
+                            :clearable="false"></v-select>
+                    </div>
                 </div>
-                </input>
-                <br>
                 <p class="text-mute">{{ status }} | {{ printer_name }}</p>
                 <button type="button" class="btn btn-primary ml-1" @click="launchQzTray" v-show="!connected">Launch
                     Printer</button>
                 <button type="button" class="btn btn-primary ml-1" @click="connectQzTray" v-show="!connected">Connect
                     Printer</button>
-                <button type="button" class="btn btn-primary ml-1" @click="connectQzTray"
+                <button type="submit" class="btn btn-primary ml-1" @click="connectQzTray"
                     v-show="connected">Register</button>
             </form>
         </div>
@@ -24,12 +74,19 @@
 </template>
 
 <script>
+import * as yup from 'yup';
+import { Form, Field, ErrorMessage } from 'vee-validate';
 import axios from 'axios';
 import swalNotif from '../Utils/swalNotif.js';
 import qz from "qz-tray";
 import notification from '../Utils/notification.js';
 
 export default {
+    components: {
+        Form,
+        Field,
+        ErrorMessage
+    },
     data() {
         return {
             disabled: false,
@@ -40,7 +97,7 @@ export default {
             company: "",
             email: "",
             phone: "",
-            country: "",
+            country: "ID",
             exhibitions: "",
             sub_exhibitions: "",
             list_exhibitions: [],
@@ -77,44 +134,16 @@ export default {
                 endOfDoc: null,
                 perSpool: 1,
             },
+            validate: yup.object({
+                name: yup.string().required("Name is required"),
+                title: yup.string().required("Title is required"),
+                company: yup.string().required("Company is required"),
+                email: yup.string().required("Email is required").email("Email is invalid"),
+                phone: yup.string().required("Phone is required"),
+            }),
         }
     },
     methods: {
-        esc(text = "") {
-            return String(text).replace(/"/g, "'");
-        },
-        async print_barcode() {
-            if (!this.connected) {
-                await this.connectQzTray();
-            }
-            const vm = this;
-            vm.globalLoader.show = true;
-            vm.disabled = true;
-            axios.post("/api/v1/web/visitor/print", {
-                'barcode': vm.barcode,
-            }, {
-                headers: {
-                    token: localStorage.getItem('token'),
-                }
-            }).then(async res => {
-                if (res.data.status == 1) {
-                    await vm.print();
-                }
-                else {
-                    notification.notif_error(res.data.message);
-                    vm.globalLoader.show = false;
-                    vm.disabled = false;
-                    vm.barcode = "";
-                }
-            }).catch(err => {
-                notification.notif_error("Error Internal Server");
-                vm.globalLoader.show = false;
-                vm.disabled = false;
-                vm.barcode = "";
-            }).finally(function () {
-
-            });
-        },
         setupQzSecureOnce() {
             qz.security.setCertificatePromise(function (resolve, reject) {
                 axios.get("/api/v1/web/qz/cert", {
@@ -220,13 +249,109 @@ export default {
             }
             await qz.print(this.cfg, [{ type: "raw", format: "plain", data: this.data_print }]);
             this.status = `Printed Successfully`;
+            this.initValue();
+            notification.notif_success("Printed Successfully");
+            this.$nextTick(() => {
+                this.$refs.name_visitor.focus();
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
             this.globalLoader.show = false;
             this.barcode = "";
             this.disabled = false;
         },
         initValue() {
-
-        }
+            this.name = "";
+            this.title = "";
+            this.company = "";
+            this.email = "";
+            this.phone = "";
+        },
+        getRegisterData() {
+            this.globalLoader.show = true;
+            const vm = this;
+            axios.post("/api/v1/web/register/data/get", {
+            }, {
+                headers: {
+                    token: localStorage.getItem('token'),
+                }
+            }).then(res => {
+                if (res.data.status == 1) {
+                    vm.list_country = res.data.data.country.map(item => ({
+                        label: item.country_name,
+                        value: item.idcountry
+                    }));
+                    vm.list_exhibitions = res.data.data.exhibitions.map(item => ({
+                        label: item.name,
+                        value: item.idexhibitions
+                    }));
+                    vm.exhibitions = res.data.data.exhibitions[0].idexhibitions;
+                    vm.getSubExhibitions();
+                } else {
+                    swalNotif.error(res.data.message);
+                }
+            }).catch(res => {
+                swalNotif.error("Error Get Data Exhibitions!");
+            }).finally(function () {
+                vm.globalLoader.show = false;
+            });
+        },
+        getSubExhibitions() {
+            this.globalLoader.show = true;
+            const vm = this;
+            axios.post("/api/v1/web/register/sub/exhibitions/get", {
+                idexhibitions: vm.exhibitions
+            }, {
+                headers: {
+                    token: localStorage.getItem('token'),
+                }
+            }).then(res => {
+                if (res.data.status == 1) {
+                    vm.list_sub_exhibitions = res.data.data.map(item => ({
+                        label: item.nama,
+                        value: item.idsubexhibitions
+                    }));
+                    vm.sub_exhibitions = res.data.data[0].idsubexhibitions;
+                } else {
+                    swalNotif.error(res.data.message);
+                }
+            }).catch(res => {
+                swalNotif.error("Error Get Data!");
+            }).finally(function () {
+                vm.globalLoader.show = false;
+            });
+        },
+        registrasi() {
+            this.globalLoader.show = true;
+            const vm = this;
+            axios.post("/api/v1/web/register/add", {
+                exhibitions: vm.exhibitions,
+                sub_exhibitions: vm.sub_exhibitions,
+                name: vm.name,
+                title: vm.title,
+                company: vm.company,
+                email: vm.email,
+                phone: vm.phone,
+                country: vm.country,
+            }, {
+                headers: {
+                    token: localStorage.getItem('token'),
+                }
+            }).then(async res => {
+                if (res.data.status == 1) {
+                    vm.data_print = res.data.data;
+                    await vm.print();
+                } else {
+                    swalNotif.error(res.data.message);
+                }
+            }).catch(res => {
+                swalNotif.error("Error Get Data!");
+            }).finally(function () {
+                vm.globalLoader.show = false;
+            });
+        },
 
     },
     mounted() {
@@ -238,6 +363,7 @@ export default {
         }
         const vm = this;
         this.loading = false;
+        this.getRegisterData();
     },
     beforeUnmount() {
         this.safeDiconnect();
