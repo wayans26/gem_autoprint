@@ -13,6 +13,7 @@ use App\Models\sub_exhibitions;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class registerController extends Controller
 {
@@ -105,15 +106,15 @@ class registerController extends Controller
             'registration_id' => $registerId,
         ]);
 
-        sendEmail::sendEmailRegistration($req, $barcode, $exhibition, $sub_exhibitions);
+        // sendEmail::sendEmailRegistration($req, $barcode, $exhibition, $sub_exhibitions);
 
         $data_print = implode("\r\n", [
             "N",
             "q832",
             "Q609,24",
-            'A' . makeid::calculateCentreX($req->name) . ',470,2,3,2,2,N,"' . makeid::esc($req->name) . '"',
-            'A' . makeid::calculateCentreX($req->title) . ',420,2,3,2,2,N,"' . makeid::esc($req->title) . '"',
-            'A' . makeid::calculateCentreX($req->company) . ',370,2,3,2,2,N,"' . makeid::esc($req->company) . '"',
+            'A' . makeid::calculateCentreX($req->name) . ',470,2,3,2,2,N,"' . Str::upper(makeid::esc($req->name))  . '"',
+            'A' . makeid::calculateCentreX($req->title) . ',420,2,3,2,2,N,"' . Str::upper(makeid::esc($req->title))  . '"',
+            'A' . makeid::calculateCentreX($req->company) . ',370,2,3,2,2,N,"' . Str::upper(makeid::esc($req->company))  . '"',
             'b340,135,Q,m2,s6,eM,iA,"' . makeid::esc($barcode) . '"',
             "P1"
         ]) . "\r\n";

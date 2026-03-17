@@ -9,6 +9,7 @@ use App\Models\registration;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class visitorPrint extends Controller
 {
@@ -53,9 +54,9 @@ class visitorPrint extends Controller
             "N",
             "q832",
             "Q609,24",
-            'A' . makeid::calculateCentreX($name) . ',470,2,3,2,2,N,"' . makeid::esc($name) . '"',
-            'A' . makeid::calculateCentreX($job) . ',420,2,3,2,2,N,"' . makeid::esc($job) . '"',
-            'A' . makeid::calculateCentreX($visitor->Company) . ',370,2,3,2,2,N,"' . makeid::esc($visitor->Company) . '"',
+            'A' . makeid::calculateCentreX($name) . ',470,2,3,2,2,N,"' . Str::upper(makeid::esc($name)) . '"',
+            'A' . makeid::calculateCentreX($job) . ',420,2,3,2,2,N,"' . Str::upper(makeid::esc($job)) . '"',
+            'A' . makeid::calculateCentreX($visitor->Company) . ',370,2,3,2,2,N,"' . Str::upper(makeid::esc($visitor->Company)) . '"',
             'b340,135,Q,m2,s6,eM,iA,"' . makeid::esc($visitor->Barcode) . '"',
             "P1"
         ]) . "\r\n";
