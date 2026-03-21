@@ -17,35 +17,29 @@ class sendEmail
         $save = File::put(public_path($path), $imageContent);
         $url = "https://" . $req->host() . '/' . $path;
 
-        Mail::to($req->email)->queue(new email_registration(array(
+        $type = $exhibitions->type === "CUSTOM" ? ($exhibitions->custom_tag === 'busworld' ? 'busworld' : 'custom') : $exhibitions->type;
+
+        $dataToSend = array(
             'url'               => $url,
             'subject'           => $exhibitions->keterangan,
             'from'              => 'no.reply@reg-gemindonesia.net',
             'from_name'         => 'GEM Indonesia',
             'idexhibitions'     => $exhibitions->idexhibitions,
             'name'              => $req->name,
+            'first_name'        => $req->name,
+            'last_name'         => "",
             'keterangan'        => $exhibitions->keterangan,
             'company'           => $req->company,
             'job_title'         => $req->job_title,
             'city'              => $req->city,
             'country'           => $req->selectedcountry,
             'email'             => $req->email,
-            'opening_hours'     => $exhibitions->opening_hours
-        )));
-        // Mail::to("pt.globalexpomanagement@gmail.com")->queue(new email_registration(array(
-        //     'url'               => $url,
-        //     'subject'           => $exhibitions->keterangan,
-        //     'from'              => 'no.reply@reg-gemindonesia.net',
-        //     'from_name'         => 'GEM Indonesia',
-        //     'idexhibitions'     => $exhibitions->idexhibitions,
-        //     'name'              => $req->name,
-        //     'keterangan'        => $exhibitions->keterangan,
-        //     'company'           => $req->company,
-        //     'job_title'         => $req->job_title,
-        //     'city'              => $req->city,
-        //     'country'           => $req->selectedcountry,
-        //     'email'             => $req->email,
-        //     'opening_hours'     => $exhibitions->opening_hours
-        // )));
+            'opening_hours'     => $exhibitions->opening_hours,
+            'type'              => $type,
+            'idsubexhibitions'  => $subexhibitions->idsubexhibitions
+        );
+
+        Mail::to($req->email)->queue(new email_registration($dataToSend));
+        Mail::to("pt.globalexpomanagement@gmail.com")->queue(new email_registration($dataToSend));
     }
 }

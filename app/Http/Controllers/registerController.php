@@ -71,7 +71,7 @@ class registerController extends Controller
 
 
         $registrasi = registration::create([
-            'Exhibition'    => $exhibition->idexhibitions,
+            'Exhibition'                            => $exhibition->idexhibitions,
             'NameTitle'                             => 0,
             'Name'                                  => $req->name,
             'Company'                               => $req->company,
@@ -106,7 +106,7 @@ class registerController extends Controller
             'registration_id' => $registerId,
         ]);
 
-        // sendEmail::sendEmailRegistration($req, $barcode, $exhibition, $sub_exhibitions);
+        sendEmail::sendEmailRegistration($req, $barcode, $exhibition, $sub_exhibitions);
 
         $data_print = implode("\r\n", [
             "N",

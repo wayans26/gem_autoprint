@@ -2,6 +2,8 @@
 
 namespace App\Mail;
 
+use App\Models\exhibitions;
+use App\Models\sub_exhibitions;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -25,6 +27,16 @@ class email_registration extends Mailable
 
     public function build()
     {
+        $exhibition = exhibitions::find($this->data['idexhibitions']);
+        $subExhibitions = sub_exhibitions::find($this->data['idsubexhibitions']);
+        if ($data['type'] == 'busworld') {
+            return $this->subject($this->data['subject'])
+                ->from($this->data['from'], $this->data['from_name'])
+                ->view('EmailPage.emilBusworld', [
+                    'data'              => $this->data,
+                ]);
+        }
+
         return $this->subject($this->data['subject'])
             ->from($this->data['from'], $this->data['from_name'])
             ->view('EmailPage.emailUndangan', [
