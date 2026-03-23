@@ -92,11 +92,11 @@ export default {
             disabled: false,
             loading: true,
             barcode: "",
-            name: "TEST",
-            title: "TEST",
-            company: "ggmpvfyeqinnenpgrgkfahqnqkfebqfxkfunbtctbbqqhhpcrkwxyipugjnpjyvhyhzmhjvcphhwwixuetxmzwhjgmccwrwibvgx",
-            email: "TEST@stas.com",
-            phone: "123123",
+            name: "",
+            title: "",
+            company: "",
+            email: "",
+            phone: "",
             country: "ID",
             exhibitions: "",
             sub_exhibitions: "",
@@ -263,11 +263,11 @@ export default {
             this.disabled = false;
         },
         initValue() {
-            // this.name = "";
-            // this.title = "";
-            // this.company = "";
-            // this.email = "";
-            // this.phone = "";
+            this.name = "";
+            this.title = "";
+            this.company = "";
+            this.email = "";
+            this.phone = "";
         },
         getRegisterData() {
             this.globalLoader.show = true;
