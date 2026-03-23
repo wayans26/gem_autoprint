@@ -81,7 +81,7 @@ class visitorPrint extends Controller
             'A' . makeid::calculateCentreX($name, $textSize) . ',' . ($startYText - ($pengurangan * 0)) . ',2,' . $textSize . ',' . $vhmul . ',' . $vhmul . ',N,"' . Str::upper(makeid::esc($name))  . '"',
             'A' . makeid::calculateCentreX($job, $textSize) . ',' . ($startYText - ($pengurangan * 1)) . ',2,' . $textSize . ',' . $vhmul . ',' . $vhmul . ',N,"' . Str::upper(makeid::esc($job))  . '"',
             ...$company,
-            'b340,135,Q,m2,s6,eQ,"' . makeid::esc($visitor->Barcode) . '"',
+            'b340,135,Q,m2,s5,eH,"' . makeid::esc($visitor->Barcode) . '"',
             "P1"
         ]) . "\r\n";
 
