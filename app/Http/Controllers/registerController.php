@@ -138,7 +138,7 @@ class registerController extends Controller
             'A' . makeid::calculateCentreX($req->name, $textSize) . ',' . ($startYText - ($pengurangan * 0)) . ',2,' . $textSize . ',' . $vhmul . ',' . $vhmul . ',N,"' . Str::upper(makeid::esc($req->name))  . '"',
             'A' . makeid::calculateCentreX($req->title, $textSize) . ',' . ($startYText - ($pengurangan * 1)) . ',2,' . $textSize . ',' . $vhmul . ',' . $vhmul . ',N,"' . Str::upper(makeid::esc($req->title))  . '"',
             ...$company,
-            'b310,135,Q,m2,s4,eH,"' . makeid::esc($barcode) . '"',
+            'b350,135,Q,m2,s4,eH,"' . makeid::esc($barcode) . '"',
             "P1"
         ]) . "\r\n";
 
