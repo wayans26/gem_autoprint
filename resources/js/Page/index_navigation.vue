@@ -1,8 +1,8 @@
 <template>
     <div id="sidebar-wrapper" data-simplebar="" data-simplebar-auto-hide="true">
         <div class="brand-logo">
-            <img :src="'/logontt.png'" class="logo-icon" alt="logo icon" />
-            <h5 class="logo-text">V 1.0</h5>
+            <img :src="'/logontt.png'" style="width: 19% !important;" class="logo-icon" alt="logo icon" />
+            <h5 class="logo-text">Visitor</h5>
         </div>
         <ul class="sidebar-menu do-nicescrol">
             <li class="sidebar-header">MAIN NAVIGATION</li>
