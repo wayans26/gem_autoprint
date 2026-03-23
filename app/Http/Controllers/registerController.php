@@ -108,16 +108,39 @@ class registerController extends Controller
 
         sendEmail::sendEmailRegistration($req, $barcode, $exhibition, $sub_exhibitions);
 
+        $textSize = Str::length($req->company) <= 20 ? "3" : (Str::length($req->company) <= 28 ? "2" : "1");
+        $startYText = 470;
+        $pengurangan = $textSize === "3" ? 50 : ($textSize === "2" ? 40 : 30);
+        $vhmul = $textSize === "1" ? "2" : "2";
+        $company = [];
+        if ($textSize === "1") {
+            $startY = $startYText - ($pengurangan * 2);
+            $split_company = str_split($req->company, 32);
+            // dd($split_company);
+            foreach ($split_company as $key => $value) {
+                array_push($company, 'A' . makeid::calculateCentreX($value, $textSize) . ',' . $startY . ',2,' . $textSize . ',' . $vhmul . ',' . $vhmul . ',N,"' . Str::upper(makeid::esc($value))  . '"');
+                if ($startY > 140) {
+                    $startY -= 30;
+                } else {
+                    $startY -= 1;
+                }
+            }
+        } else {
+            array_push($company, 'A' . makeid::calculateCentreX($req->company, $textSize) . ',370,2,' . $textSize . ',' . $vhmul . ',' . $vhmul . ',N,"' . Str::upper(makeid::esc($req->company))  . '"');
+        }
+
         $data_print = implode("\r\n", [
             "N",
             "q832",
             "Q609,24",
-            'A' . makeid::calculateCentreX($req->name) . ',470,2,3,2,2,N,"' . Str::upper(makeid::esc($req->name))  . '"',
-            'A' . makeid::calculateCentreX($req->title) . ',420,2,3,2,2,N,"' . Str::upper(makeid::esc($req->title))  . '"',
-            'A' . makeid::calculateCentreX($req->company) . ',370,2,3,2,2,N,"' . Str::upper(makeid::esc($req->company))  . '"',
+            'A' . makeid::calculateCentreX($req->name, $textSize) . ',' . ($startYText - ($pengurangan * 0)) . ',2,' . $textSize . ',' . $vhmul . ',' . $vhmul . ',N,"' . Str::upper(makeid::esc($req->name))  . '"',
+            'A' . makeid::calculateCentreX($req->title, $textSize) . ',' . ($startYText - ($pengurangan * 1)) . ',2,' . $textSize . ',' . $vhmul . ',' . $vhmul . ',N,"' . Str::upper(makeid::esc($req->title))  . '"',
+            ...$company,
             'b340,135,Q,m2,s6,eM,iA,"' . makeid::esc($barcode) . '"',
             "P1"
         ]) . "\r\n";
+
+        // dd($data_print);
 
         return responseMessage::responseMessageWithData(1, "Success", 200, $data_print);
     }

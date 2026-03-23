@@ -4,7 +4,7 @@
             <h5>Visitor Print</h5>
         </div>
         <div class="card-body">
-            <form>
+            <form @submit.prevent="testPrint">
                 <input ref="barcode_field" name="barcode" type="text" class="form-control" placeholder="Barcode *"
                     v-model="barcode" autofocus :disabled="disabled || !connected">
                 </input>
@@ -93,6 +93,9 @@ export default {
         }
     },
     methods: {
+        testPrint() {
+            this.print_barcode();
+        },
         esc(text = "") {
             return String(text).replace(/"/g, "'");
         },

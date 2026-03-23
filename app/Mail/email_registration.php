@@ -29,17 +29,17 @@ class email_registration extends Mailable
     {
         $exhibition = exhibitions::find($this->data['idexhibitions']);
         $subExhibitions = sub_exhibitions::find($this->data['idsubexhibitions']);
-        if ($data['type'] == 'busworld') {
+        if ($this->data['type'] == 'busworld') {
             return $this->subject($this->data['subject'])
                 ->from($this->data['from'], $this->data['from_name'])
-                ->view('EmailPage.emilBusworld', [
+                ->view('Email.emilBusworld', [
                     'data'              => $this->data,
                 ]);
         }
 
         return $this->subject($this->data['subject'])
             ->from($this->data['from'], $this->data['from_name'])
-            ->view('EmailPage.emailUndangan', [
+            ->view('Email.emailUndangan', [
                 'data'              => $this->data,
             ]);
     }

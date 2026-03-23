@@ -12,7 +12,7 @@ class sendEmail
 {
     public static function sendEmailRegistration($req, $barcode, $exhibitions, $subexhibitions)
     {
-        $path = "Barcode/2024/event3/" . $req->name . "-" . $barcode . ".png";
+        $path = "Barcode/" . $req->name . "-" . $barcode . ".png";
         $imageContent = file_get_contents("https://api.qrserver.com/v1/create-qr-code/?size=200x200&qzone=4&data=" . $barcode);
         $save = File::put(public_path($path), $imageContent);
         $url = "https://" . $req->host() . '/' . $path;

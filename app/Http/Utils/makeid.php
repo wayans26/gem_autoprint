@@ -34,10 +34,17 @@ class makeid
     {
         return str_replace('"', "'", (string)$text);
     }
-    public static function calculateCentreX($text)
+    public static function calculateCentreX($text, $size)
     {
-        // $pitchMap = [1 => 20.0, 2 => 17.0, 3 => 14.5, 4 => 13.0, 5 => 5.6];
-        $pithch = 14.5;
+        // $pitchMap/Ukuran = [1 => 20.0, 2 => 17.0, 3 => 14.5, 4 => 13.0, 5 => 5.6];
+        $pitchMap = [
+            '1' => 20.0,
+            '2' => 17.0,
+            '3' => 14.5,
+            '4' => 13.0,
+            '5' => 5.6
+        ];
+        $pithch = $pitchMap[$size] ?? 14.5;
         $dpi = 203;
         $hmul = 2;
         $labelWidth = 832;
