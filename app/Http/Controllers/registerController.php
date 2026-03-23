@@ -133,10 +133,12 @@ class registerController extends Controller
             "N",
             "q832",
             "Q609,24",
+            "S2",
+            "D9",
             'A' . makeid::calculateCentreX($req->name, $textSize) . ',' . ($startYText - ($pengurangan * 0)) . ',2,' . $textSize . ',' . $vhmul . ',' . $vhmul . ',N,"' . Str::upper(makeid::esc($req->name))  . '"',
             'A' . makeid::calculateCentreX($req->title, $textSize) . ',' . ($startYText - ($pengurangan * 1)) . ',2,' . $textSize . ',' . $vhmul . ',' . $vhmul . ',N,"' . Str::upper(makeid::esc($req->title))  . '"',
             ...$company,
-            'b340,135,Q,m2,s6,eM,"' . makeid::esc($barcode) . '"',
+            'b340,135,Q,m2,s6,eH,"' . makeid::esc($barcode) . '"',
             "P1"
         ]) . "\r\n";
 
