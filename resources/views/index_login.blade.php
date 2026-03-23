@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
-    <title>AMS - Asset Management System</title>
+    <title>Visitor Registration</title>
 
     <script src="{{ asset('rukada/js/jquery.min.js') }}"></script>
     <script src="{{ asset('rukada/js/popper.min.js') }}"></script>

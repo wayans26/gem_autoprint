@@ -8,7 +8,7 @@
                     </a>
                 </li>
             </ul>
-            <span class="title-dinas">Asset Management System</span>
+            <span class="title-dinas">Visitor Registration</span>
         </nav>
     </header>
 </template>
