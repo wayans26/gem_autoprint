@@ -66,7 +66,7 @@ class registerController extends Controller
         if (empty($sub_exhibitions)) {
             return responseMessage::responseMessage(0, "Sub Exhibition not found", 200);
         }
-        $barcode = $exhibition->type . $exhibition->idexhibitions . "=" . makeid::createId(6);
+        $barcode = $exhibition->type . $exhibition->idexhibitions . "-" . makeid::createId(6);
 
 
 

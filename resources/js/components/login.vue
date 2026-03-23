@@ -31,11 +31,11 @@
                 <br>
                 <br>
                 <button type="submit" :disabled="loading" class="
-                                btn btn-primary
-                                shadow-primary
-                                btn-block
-                                waves-effect waves-light
-                            ">
+                                    btn btn-primary
+                                    shadow-primary
+                                    btn-block
+                                    waves-effect waves-light
+                                ">
                     <i :class="{
                         'fa fa-spinner fa-spin': loading,
                         'fa fa-sign-in': !loading,
@@ -45,14 +45,6 @@
 
             </form>
         </div>
-
-        <div class="d-flex align-items-center text-center my-4">
-            <hr class="flex-grow-1 border-secondary">
-            <span class="mx-3 fw-semibold text-secondary">Download Apps</span>
-            <hr class="flex-grow-1 border-secondary">
-        </div>
-        <a :href="'/AMS-APPS.apk'" target="_blank"><img :src="'/google-play-download.png'" alt="AMS Mobile Apps"
-                style="width: 100%;padding: 10px 50px 10px 50px;"></a>
     </div>
     </div>
 </template>
