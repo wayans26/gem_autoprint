@@ -3,7 +3,10 @@
         <div class="card-header">
             <h5>Visitor Registration Manual</h5>
         </div>
-        <div class="card-body">
+        <div class="card-body" v-show="!hasExhibitions">
+            <h5>Exhibitions Closed, Pelase Contact Admin to Register Visitor</h5>
+        </div>
+        <div class="card-body" v-show="hasExhibitions">
             <Form :validation-schema="validate" @submit="registrasi">
                 <div v-show="connected">
                     <div class="form-group">
@@ -90,6 +93,7 @@ export default {
     data() {
         return {
             disabled: false,
+            hasExhibitions: true,
             loading: true,
             barcode: "",
             name: "",
@@ -279,6 +283,11 @@ export default {
                 }
             }).then(res => {
                 if (res.data.status == 1) {
+                    if (res.data.data.exhibitions.length == 0) {
+                        swalNotif.info("Exhibitions Not Found, Please Contact Admin!");
+                        vm.hasExhibitions = false;
+                        return;
+                    }
                     vm.list_country = res.data.data.country.map(item => ({
                         label: item.country_name,
                         value: item.idcountry
@@ -347,7 +356,7 @@ export default {
                     swalNotif.error(res.data.message);
                 }
             }).catch(res => {
-                swalNotif.error("Error Get Data!");
+                swalNotif.error("Error Registrasi!");
             }).finally(function () {
                 vm.globalLoader.show = false;
             });

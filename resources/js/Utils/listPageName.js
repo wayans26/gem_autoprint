@@ -22,6 +22,10 @@ const pageName = [{
         label: "Visitor Registrasi",
         value: "visitor_registrasi"
     },
+    {
+        label: "Exhibitions Manage",
+        value: "exhibitions"
+    },
 ];
 
 export default pageName;

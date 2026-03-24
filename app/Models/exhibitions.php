@@ -19,6 +19,7 @@ class exhibitions extends Model
         'all_banner',
         'web_own',
         'status',
+        'is_show',
         'tanggal',
         'keterangan',
         'event_name',

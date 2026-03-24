@@ -21,7 +21,10 @@ class registerController extends Controller
     function getRegisterData(Request $req)
     {
         $country = country::select('idcountry', 'country_name')->get();
-        $exhibitions = exhibitions::select('idexhibitions', 'name')->get();
+        $exhibitions = exhibitions::where([
+            'status'    => 1,
+            'is_show'   => 1
+        ])->select('idexhibitions', 'name')->get();
         return responseMessage::responseMessageWithData(1, "Success", 200, array(
             'country'       => $country,
             'exhibitions'   => $exhibitions

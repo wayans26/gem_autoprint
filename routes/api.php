@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\exhibitionsController;
 use App\Http\Controllers\loginController;
 use App\Http\Controllers\menuEditorController;
 use App\Http\Controllers\menuGroupController;
@@ -92,6 +93,11 @@ Route::prefix($version)->group(function () use ($prefixWeb, $prefixMobile) {
                 Route::post('/register/data/get', 'getRegisterData')->middleware('permission:visitor_registrasi,view');
                 Route::post('/register/sub/exhibitions/get', 'getSubExhibitions')->middleware('permission:visitor_registrasi,view');
                 Route::post('/register/add', 'registrasi')->middleware('permission:visitor_registrasi,create');
+            });
+
+            Route::controller(exhibitionsController::class)->group(function () {
+                Route::get('/exhibitions/get', 'getExhibitions')->middleware('permission:exhibitions,view');
+                Route::post('/exhibitions/show/change', 'changeShowStatus')->middleware('permission:exhibitions,update');
             });
         });
     });

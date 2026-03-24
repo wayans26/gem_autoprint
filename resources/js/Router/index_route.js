@@ -58,6 +58,14 @@ const routes = [{
         }
     },
     {
+        path: prefix + "/exhibitions/manage",
+        name: "exhibitions",
+        component: () => import("../Page/exhibitions.vue"),
+        meta: {
+            parent: "exhibitions",
+        }
+    },
+    {
         path: "/:pathMatch(.*)*",
         name: "notFound",
         component: () => import("../components/notFound.vue"),
