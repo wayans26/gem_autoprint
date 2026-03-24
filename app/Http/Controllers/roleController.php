@@ -113,6 +113,9 @@ class roleController extends Controller
                         'allow_print'       => $value['allow_print'] == 'true' ? 1 : 0,
                     ]);
                 }
+                $role->update([
+                    'role_name' => $req->role_name
+                ]);
             });
             return responseMessage::responseMessage(1, "Success", 200);
         } catch (\Throwable $th) {
