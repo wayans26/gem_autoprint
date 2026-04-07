@@ -497,6 +497,9 @@ export default {
             this.connecting = false;
             this.status = "Printer Connected";
         }
+        if (this.printer_name) {
+            this.connectQzTray();
+        }
         const vm = this;
         this.loading = false;
     },
