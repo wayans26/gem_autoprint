@@ -69,6 +69,10 @@ const globalBreadCrumb = app.config.globalProperties.globalBreadcrumb = reactive
 });
 
 app.config.globalProperties.globalNavigation = await getNavigation();
+if (app.config.globalProperties.globalNavigation.status === 401) {
+    location.href = "/auth/login";
+}
+
 app.config.globalProperties.firstPage = app.config.globalProperties.globalNavigation[0].child[0].page_name;
 
 router.beforeEach(async (to, from, next) => {
