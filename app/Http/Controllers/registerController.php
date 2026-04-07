@@ -115,6 +115,8 @@ class registerController extends Controller
         $startYText = 470;
         $pengurangan = $textSize === "3" ? 50 : ($textSize === "2" ? 40 : 30);
         $vhmul = $textSize === "1" ? "2" : "2";
+        $barcodeSize = $textSize === "3" ? "s6" : ($textSize === "2" ? "s5" : "s4");
+        $barcodePosition = $textSize === "3" ? "340" : ($textSize === "2" ? "345" : "350");
         $company = [];
         if ($textSize === "1") {
             $startY = $startYText - ($pengurangan * 2);
@@ -141,7 +143,7 @@ class registerController extends Controller
             'A' . makeid::calculateCentreX($req->name, $textSize) . ',' . ($startYText - ($pengurangan * 0)) . ',2,' . $textSize . ',' . $vhmul . ',' . $vhmul . ',N,"' . Str::upper(makeid::esc($req->name))  . '"',
             'A' . makeid::calculateCentreX($req->title, $textSize) . ',' . ($startYText - ($pengurangan * 1)) . ',2,' . $textSize . ',' . $vhmul . ',' . $vhmul . ',N,"' . Str::upper(makeid::esc($req->title))  . '"',
             ...$company,
-            'b350,135,Q,m2,s4,eH,"' . makeid::esc($barcode) . '"',
+            'b360,135,Q,m2,' . $barcodeSize . ',eH,"' . makeid::esc($barcode) . '"',
             "P1"
         ]) . "\r\n";
 
