@@ -117,7 +117,7 @@ class registerController extends Controller
         $vhmul = $textSize === "1" ? "2" : "2";
         $barcodeSize = $textSize === "3" ? "s6" : ($textSize === "2" ? "s5" : "s4");
         $barcodePositionX = $textSize === "3" ? "340" : ($textSize === "2" ? "345" : "350"); //makin besar makin ke kiri
-        $barcodePositionY = $textSize === "3" ? "125" : ($textSize === "2" ? "125" : "125"); //makin kecil makin turun
+        $barcodePositionY = $textSize === "3" ? "120" : ($textSize === "2" ? "120" : "120"); //makin kecil makin turun
         $company = [];
         if ($textSize === "1") {
             $startY = $startYText - ($pengurangan * 2);
