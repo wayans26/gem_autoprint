@@ -210,7 +210,7 @@ export default {
                 await qz.websocket.connect({ retries: 5, delay: 1 }).then(async () => {
                     this.connected = true;
                     this.status = "Printer Connected";
-                    this.printer_name = await qz.printers.getDefault();
+                    // this.printer_name = await qz.printers.getDefault();
                     // this.printer_name = "Argox CP-2140 PPLB"
                     this.cfg = qz.configs.create(this.printer_name);
                     this.connecting = false;
