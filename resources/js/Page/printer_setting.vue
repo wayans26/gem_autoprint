@@ -7,7 +7,7 @@
         <div class="card-body">
             <div class="form-group">
                 <label for="input-1">Printers</label>
-                <v-select class="form-control" placeholder="Select an Sub Exhibitions" :options="list_printer"
+                <v-select class="form-control" placeholder="Select an Printer Name" :options="list_printer"
                     label="label" :reduce="option => option.value" v-model="printer_name" :clearable="false"></v-select>
             </div>
         </div>

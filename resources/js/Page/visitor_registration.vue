@@ -3,10 +3,11 @@
         <div class="card-header">
             <h5>Visitor Registration Manual</h5>
         </div>
-        <div class="card-body" v-show="!hasExhibitions">
-            <h5>Exhibitions Closed, Pelase Contact Admin to Register Visitor</h5>
+        <div class="card-body" v-show="!hasExhibitions || !printer_name">
+            <h5 v-show="!hasExhibitions">Exhibitions Closed, Pelase Contact Admin to Register Visitor</h5>
+            <h5 v-show="!printer_name">Please Init Printer Setting</h5>
         </div>
-        <div class="card-body" v-show="hasExhibitions">
+        <div class="card-body" v-show="hasExhibitions && printer_name">
             <Form :validation-schema="validate" @submit="registrasi">
                 <div v-show="connected">
                     <div class="form-group">
@@ -110,7 +111,7 @@ export default {
 
             // Printer
             status: "Printer Not Connected",
-            printer_name: "",
+            printer_name: localStorage.getItem("printer_name"),
             connected: false,
             connecting: false,
             showLaunchHint: false,
@@ -371,6 +372,9 @@ export default {
             this.status = "Printer Connected";
         }
         const vm = this;
+        if (this.printer_name) {
+            this.connectQzTray();
+        }
         this.loading = false;
         this.getRegisterData();
     },

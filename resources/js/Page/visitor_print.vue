@@ -4,7 +4,10 @@
             <h5>Visitor Print</h5>
         </div>
         <div class="card-body">
-            <form @submit.prevent="testPrint">
+            <div class="card-body" v-show="!printer_name">
+                <h5>Please Init Printer Setting</h5>
+            </div>
+            <form @submit.prevent="testPrint" v-show="printer_name">
                 <input ref="barcode_field" name="barcode" type="text" class="form-control" placeholder="Barcode *"
                     v-model="barcode" autofocus :disabled="disabled || !connected">
                 </input>
@@ -49,7 +52,7 @@ export default {
 
             // Printer
             status: "Printer Not Connected",
-            printer_name: "",
+            printer_name: localStorage.getItem("printer_name"),
             connected: false,
             connecting: false,
             showLaunchHint: false,
