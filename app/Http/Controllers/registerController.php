@@ -111,17 +111,29 @@ class registerController extends Controller
 
         sendEmail::sendEmailRegistration($req, $barcode, $exhibition, $sub_exhibitions);
 
-        $textSize = Str::length($req->company) <= 20 ? "3" : (Str::length($req->company) <= 28 ? "2" : "1");
+        $textSize = Str::length($req->company) <= 20 ? "3" : (Str::length($req->company) <= 50 ? "2" : "1");
         $startYText = 470;
         $pengurangan = $textSize === "3" ? 50 : ($textSize === "2" ? 40 : 30);
         $vhmul = $textSize === "1" ? "2" : "2";
-        $barcodeSize = $textSize === "3" ? "s6" : ($textSize === "2" ? "s5" : "s4");
+        $barcodeSize = $textSize === "3" ? "s6" : ($textSize === "2" ? "s6" : "s5");
         $barcodePositionX = $textSize === "3" ? "340" : ($textSize === "2" ? "345" : "350"); //makin besar makin ke kiri
         $barcodePositionY = $textSize === "3" ? "100" : ($textSize === "2" ? "100" : "100"); //makin kecil makin turun
         $company = [];
         if ($textSize === "1") {
             $startY = $startYText - ($pengurangan * 2);
             $split_company = str_split($req->company, 32);
+            // dd($split_company);
+            foreach ($split_company as $key => $value) {
+                array_push($company, 'A' . makeid::calculateCentreX($value, $textSize) . ',' . $startY . ',2,' . $textSize . ',' . $vhmul . ',' . $vhmul . ',N,"' . Str::upper(makeid::esc($value))  . '"');
+                if ($startY > 140) {
+                    $startY -= 30;
+                } else {
+                    $startY -= 1;
+                }
+            }
+        } else if ($textSize === "2") {
+            $startY = $startYText - ($pengurangan * 2);
+            $split_company = str_split($req->company, 28);
             // dd($split_company);
             foreach ($split_company as $key => $value) {
                 array_push($company, 'A' . makeid::calculateCentreX($value, $textSize) . ',' . $startY . ',2,' . $textSize . ',' . $vhmul . ',' . $vhmul . ',N,"' . Str::upper(makeid::esc($value))  . '"');
