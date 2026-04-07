@@ -27,4 +27,9 @@ class exhibitions extends Model
         'type',
         'custom_tag',
     ];
+
+    public function user_has_exhibitions()
+    {
+        return $this->hasMany(user_has_exhibitions::class, 'exhibition_id', 'idexhibitions');
+    }
 }

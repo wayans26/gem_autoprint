@@ -66,6 +66,14 @@ const routes = [{
         }
     },
     {
+        path: prefix + "/printer/setting",
+        name: "printer_setting",
+        component: () => import("../Page/printer_setting.vue"),
+        meta: {
+            parent: "printer_setting",
+        }
+    },
+    {
         path: "/:pathMatch(.*)*",
         name: "notFound",
         component: () => import("../components/notFound.vue"),

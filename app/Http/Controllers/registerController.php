@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Utils\generatePrint;
 use App\Http\Utils\makeid;
 use App\Http\Utils\responseMessage;
 use App\Http\Utils\sendEmail;
@@ -10,6 +11,7 @@ use App\Models\country;
 use App\Models\exhibitions;
 use App\Models\registration;
 use App\Models\sub_exhibitions;
+use App\Models\user_has_exhibitions;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -21,10 +23,9 @@ class registerController extends Controller
     function getRegisterData(Request $req)
     {
         $country = country::select('idcountry', 'country_name')->get();
-        $exhibitions = exhibitions::where([
-            'status'    => 1,
-            'is_show'   => 1
-        ])->select('idexhibitions', 'name')->get();
+        $userExhibitions = user_has_exhibitions::where('user_id', $req->users->id)->pluck('exhibition_id')->toArray();
+        $exhibitions = exhibitions::whereIn('idexhibitions', $userExhibitions)->select('idexhibitions', 'name')->get();
+
         return responseMessage::responseMessageWithData(1, "Success", 200, array(
             'country'       => $country,
             'exhibitions'   => $exhibitions
@@ -111,54 +112,7 @@ class registerController extends Controller
 
         sendEmail::sendEmailRegistration($req, $barcode, $exhibition, $sub_exhibitions);
 
-        $textSize = Str::length($req->company) <= 20 ? "3" : (Str::length($req->company) <= 84 ? "2" : "1");
-        $startYText = 470;
-        $pengurangan = $textSize === "3" ? 50 : ($textSize === "2" ? 40 : 30);
-        $vhmul = $textSize === "1" ? "2" : "2";
-        $barcodeSize = $textSize === "3" ? "s6" : ($textSize === "2" ? "s6" : "s5");
-        $barcodePositionX = $textSize === "3" ? "340" : ($textSize === "2" ? "345" : "350"); //makin besar makin ke kiri
-        $barcodePositionY = $textSize === "3" ? "100" : ($textSize === "2" ? "100" : "100"); //makin kecil makin turun
-        $company = [];
-        if ($textSize === "1") {
-            $startY = $startYText - ($pengurangan * 2);
-            $split_company = str_split($req->company, 32);
-            // dd($split_company);
-            foreach ($split_company as $key => $value) {
-                array_push($company, 'A' . makeid::calculateCentreX($value, $textSize) . ',' . $startY . ',2,' . $textSize . ',' . $vhmul . ',' . $vhmul . ',N,"' . Str::upper(makeid::esc($value))  . '"');
-                if ($startY > 140) {
-                    $startY -= 30;
-                } else {
-                    $startY -= 1;
-                }
-            }
-        } else if ($textSize === "2") {
-            $startY = $startYText - ($pengurangan * 2);
-            $split_company = str_split($req->company, 28);
-            // dd($split_company);
-            foreach ($split_company as $key => $value) {
-                array_push($company, 'A' . makeid::calculateCentreX($value, $textSize) . ',' . $startY . ',2,' . $textSize . ',' . $vhmul . ',' . $vhmul . ',N,"' . Str::upper(makeid::esc($value))  . '"');
-                if ($startY > 140) {
-                    $startY -= 30;
-                } else {
-                    $startY -= 1;
-                }
-            }
-        } else {
-            array_push($company, 'A' . makeid::calculateCentreX($req->company, $textSize) . ',370,2,' . $textSize . ',' . $vhmul . ',' . $vhmul . ',N,"' . Str::upper(makeid::esc($req->company))  . '"');
-        }
-
-        $data_print = implode("\r\n", [
-            "N",
-            "q832",
-            "Q609,24",
-            "S2",
-            "D9",
-            'A' . makeid::calculateCentreX($req->name, $textSize) . ',' . ($startYText - ($pengurangan * 0)) . ',2,' . $textSize . ',' . $vhmul . ',' . $vhmul . ',N,"' . Str::upper(makeid::esc($req->name))  . '"',
-            'A' . makeid::calculateCentreX($req->title, $textSize) . ',' . ($startYText - ($pengurangan * 1)) . ',2,' . $textSize . ',' . $vhmul . ',' . $vhmul . ',N,"' . Str::upper(makeid::esc($req->title))  . '"',
-            ...$company,
-            'b' . $barcodePositionX . ',' . $barcodePositionY . ',Q,m2,' . $barcodeSize . ',eH,"' . makeid::esc($barcode) . '"',
-            "P1"
-        ]) . "\r\n";
+        $data_print = generatePrint::PPLB($req->name, $req->title, $req->company, $barcode);
 
         // dd($data_print);
 
