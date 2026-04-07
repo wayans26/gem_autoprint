@@ -111,7 +111,7 @@ class registerController extends Controller
 
         sendEmail::sendEmailRegistration($req, $barcode, $exhibition, $sub_exhibitions);
 
-        $textSize = Str::length($req->company) <= 20 ? "3" : (Str::length($req->company) <= 50 ? "2" : "1");
+        $textSize = Str::length($req->company) <= 20 ? "3" : (Str::length($req->company) <= 84 ? "2" : "1");
         $startYText = 470;
         $pengurangan = $textSize === "3" ? 50 : ($textSize === "2" ? 40 : 30);
         $vhmul = $textSize === "1" ? "2" : "2";
