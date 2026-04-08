@@ -151,7 +151,9 @@ export default {
     },
     mounted() {
         this.setupQzSecureOnce();
-        this.connectQzTray();
+        setTimeout(() => {
+            this.connectQzTray();
+        }, 1000);
     },
     beforeUnmount() {
         this.safeDiconnect();
