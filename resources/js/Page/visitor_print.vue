@@ -498,7 +498,9 @@ export default {
             this.status = "Printer Connected";
         }
         if (this.printer_name) {
-            this.connectQzTray();
+            setTimeout(() => {
+                this.connectQzTray();
+            }, 1000);
         }
         const vm = this;
         this.loading = false;

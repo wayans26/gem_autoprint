@@ -217,7 +217,7 @@ export default {
                     this.cfg = qz.configs.create(this.printer_name);
                     this.connecting = false;
                 }).catch((err) => {
-                    swalNotif.error("Please Launch Printer First1");
+                    swalNotif.error("Please Launch Printer First");
                     this.status = "Printer Not Connected";
                     this.connecting = false;
                 });
@@ -377,7 +377,7 @@ export default {
         if (this.printer_name) {
             setTimeout(() => {
                 this.connectQzTray();
-            }, 500);
+            }, 1000);
         }
         this.loading = false;
         this.getRegisterData();
