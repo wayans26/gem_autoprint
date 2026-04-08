@@ -1,7 +1,7 @@
 <template>
     <div class="card">
         <div class="card-header">
-            <h5>Visitor Registration Manual</h5>
+            <h5>Visitor Registration Manual {{ list_print }}</h5>
         </div>
         <div class="card-body" v-show="!hasExhibitions || !printer_name">
             <h5 v-show="!hasExhibitions">Exhibitions Closed, Pelase Contact Admin to Register Visitor</h5>
@@ -115,6 +115,7 @@ export default {
             connected: false,
             connecting: false,
             showLaunchHint: false,
+            list_print: [],
             cfg: null,
             data_print: "",
             data_config: {
@@ -212,8 +213,7 @@ export default {
                     this.status = "Printer Connected";
                     // this.printer_name = await qz.printers.getDefault();
                     // this.printer_name = "Argox CP-2140 PPLB"
-                    const result = await qz.printers.find();
-                    console.log(result);
+                    this.list_print = await qz.printers.find();
 
                     // this.cfg = qz.configs.create(this.printer_name);
                     this.connecting = false;
