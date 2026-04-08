@@ -14,7 +14,6 @@
         </div>
         <div class="card-footer">
             <button class="btn btn-success m-1" @click="setPrinter">Update Setting</button>
-            <button class="btn btn-success m-1" @click="connectQzTray">Connect</button>
         </div>
     </div>
 </template>
@@ -69,31 +68,17 @@ export default {
             });
         },
         async connectQzTray() {
-            if (this.connecting) {
-                swalNotif.info("Connecting In Progress");
-                return;
-            }
-            this.connecting = true;
-            if (qz.websocket.isActive()) {
+            if (qz.websocket.isActive()) return;
+            this.status = "Connectiong...";
+
+            await qz.websocket.connect({ retries: 5, delay: 1 }).then(async () => {
                 this.connected = true;
+                this.status = "Qz Connected";
+            }).catch((err) => {
+                swalNotif.error("Please Launch QZ Try");
+                this.status = "Printer Not Connected";
                 this.connecting = false;
-                this.status = "Printer Already Connected";
-            }
-            else {
-                this.status = "Connectiong...";
-                await qz.websocket.connect({ retries: 5, delay: 1 }).then(async () => {
-                    this.connected = true;
-                    this.status = "Printer Connected";
-                    // this.printer_name = await qz.printers.getDefault();
-                    // this.printer_name = "Argox CP-2140 PPLB"
-                    this.cfg = qz.configs.create(this.printer_name);
-                    this.connecting = false;
-                }).catch((err) => {
-                    swalNotif.error("Please Launch Printer First");
-                    this.status = "Printer Not Connected";
-                    this.connecting = false;
-                });
-            }
+            });
         },
         async loadPrinter() {
             if (this.connecting) {
@@ -103,8 +88,6 @@ export default {
             try {
                 await this.connectQzTray();
                 const result = await qz.printers.find();
-                console.log(result);
-
 
                 this.list_printer = Array.isArray(result) ? result.map(item => (
                     {
@@ -153,14 +136,9 @@ export default {
     },
     mounted() {
         this.setupQzSecureOnce();
-        if (qz.websocket.isActive()) {
-            this.connected = true;
-            this.connecting = false;
-            this.status = "Printer Connected";
-        }
-        // setTimeout(() => {
-        //     this.loadPrinter();
-        // }, 1000);
+        setTimeout(() => {
+            this.loadPrinter();
+        }, 1000);
     },
     beforeUnmount() {
         this.safeDiconnect();

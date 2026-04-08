@@ -212,7 +212,10 @@ export default {
                     this.status = "Printer Connected";
                     // this.printer_name = await qz.printers.getDefault();
                     // this.printer_name = "Argox CP-2140 PPLB"
-                    this.cfg = qz.configs.create(this.printer_name);
+                    const result = await qz.printers.find();
+                    console.log(result);
+
+                    // this.cfg = qz.configs.create(this.printer_name);
                     this.connecting = false;
                 }).catch((err) => {
                     swalNotif.error("Please Launch Printer First");
