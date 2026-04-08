@@ -1,42 +1,151 @@
 <template>
     <div class="card">
         <div class="card-header">
-            <h5>Printer Setting
-                <!-- <button class="btn btn-primary m-1" @click="refreshPrinter">Refresh Printer</button> -->
-            </h5>
+            <h5>Visitor Registration Manual</h5>
         </div>
-        <div class="card-body">
-            <p>Status : {{ status }}</p>
-            <div class="form-group">
-                <label for="input-1">Printers</label>
-                <v-select class="form-control" placeholder="Select an Printer Name" :options="list_printer"
-                    label="label" :reduce="option => option.value" v-model="printer_name" :clearable="false"></v-select>
-            </div>
+        <div class="card-body" v-show="!hasExhibitions || !printer_name">
+            <h5 v-show="!hasExhibitions">Exhibitions Closed, Pelase Contact Admin to Register Visitor</h5>
+            <h5 v-show="!printer_name">Please Init Printer Setting</h5>
         </div>
-        <div class="card-footer">
-            <!-- <button class="btn btn-success m-1" @click="setPrinter">Update Setting</button> -->
-            <button class="btn btn-success m-1" @click="connectQzTray">Connect</button>
+        <div class="card-body" v-show="hasExhibitions">
+            <Form :validation-schema="validate" @submit="registrasi">
+                <div v-show="connected">
+                    <div class="form-group">
+                        <label for="input-1">Exhibitions</label>
+                        <v-select class="form-control" placeholder="Select an Exhibitions" :options="list_exhibitions"
+                            label="label" :reduce="option => option.value" v-model="exhibitions"
+                            @option:selected="getSubExhibitions" :clearable="false"></v-select>
+                    </div>
+                    <div class="form-group">
+                        <label for="input-1">Sub Exhibitions</label>
+                        <v-select class="form-control" placeholder="Select an Sub Exhibitions"
+                            :options="list_sub_exhibitions" label="label" :reduce="option => option.value"
+                            v-model="sub_exhibitions" :clearable="false"></v-select>
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Name *</label>
+                        <Field name="name" v-slot="{ field }" v-model="name">
+                            <input v-bind="field" ref="name_visitor" class="form-control" id="name"
+                                placeholder="Name *" />
+                        </Field>
+                        <ErrorMessage style="color: red;" name="name" />
+                    </div>
+                    <div class="form-group">
+                        <label for="title">Title *</label>
+                        <Field name="title" type="text" class="form-control" id="title" placeholder="Title *"
+                            v-model="title">
+                        </Field>
+                        <ErrorMessage style="color: red;" name="title" />
+                    </div>
+                    <div class="form-group">
+                        <label for="company">Company *</label>
+                        <Field name="company" type="text" class="form-control" id="company" placeholder="Company *"
+                            v-model="company">
+                        </Field>
+                        <ErrorMessage style="color: red;" name="company" />
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <Field name="email" type="text" class="form-control" id="email" placeholder="Email *"
+                            v-model="email">
+                        </Field>
+                        <ErrorMessage style="color: red;" name="email" />
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone *</label>
+                        <Field name="phone" type="text" class="form-control" id="phone" placeholder="Phone *"
+                            v-model="phone">
+                        </Field>
+                        <ErrorMessage style="color: red;" name="phone" />
+                    </div>
+                    <div class="form-group">
+                        <label for="input-1">Country</label>
+                        <v-select class="form-control" placeholder="Select an Country" :options="list_country"
+                            label="label" :reduce="option => option.value" v-model="country"
+                            :clearable="false"></v-select>
+                    </div>
+                </div>
+                <p class="text-mute">{{ status }} | {{ printer_name }}</p>
+                <button type="button" class="btn btn-primary ml-1" @click="launchQzTray" v-show="!connected">Launch
+                    Printer</button>
+                <button type="button" class="btn btn-primary ml-1" @click="connectQzTray" v-show="!connected">Connect
+                    Printer</button>
+                <button type="submit" class="btn btn-primary ml-1" @click="connectQzTray"
+                    v-show="connected">Register</button>
+            </form>
         </div>
     </div>
 </template>
 
 <script>
+import * as yup from 'yup';
+import { Form, Field, ErrorMessage } from 'vee-validate';
+import axios from 'axios';
 import swalNotif from '../Utils/swalNotif.js';
 import qz from "qz-tray";
+import notification from '../Utils/notification.js';
 
 export default {
+    components: {
+        Form,
+        Field,
+        ErrorMessage
+    },
     data() {
         return {
             disabled: false,
             hasExhibitions: true,
             loading: true,
+            barcode: "",
+            name: "",
+            title: "",
+            company: "",
+            email: "",
+            phone: "",
+            country: "ID",
+            exhibitions: "",
+            sub_exhibitions: "",
+            list_exhibitions: [],
+            list_sub_exhibitions: [],
+            list_country: [],
 
             // Printer
             status: "Printer Not Connected",
             printer_name: localStorage.getItem("printer_name"),
-            list_printer: [],
             connected: false,
             connecting: false,
+            showLaunchHint: false,
+            cfg: null,
+            data_print: "",
+            data_config: {
+                colorType: "color",
+                copies: 1,
+                density: 0,
+                duplex: false,
+                fallbackDensity: null,
+                interpolation: "bicubic",
+                jobName: null,
+                margins: 0,
+                orientation: null,
+                paperThickness: null,
+                printerTray: null,
+                rasterize: true,
+                rotation: 0,
+                scaleContent: true,
+                size: null,
+                units: "in",
+                altPrinting: false,
+                encoding: null,
+                endOfDoc: null,
+                perSpool: 1,
+            },
+            validate: yup.object({
+                name: yup.string().required("Name is required"),
+                title: yup.string().required("Title is required"),
+                company: yup.string().required("Company is required"),
+                email: yup.string().required("Email is required").email("Email is invalid"),
+                phone: yup.string().required("Phone is required"),
+            }),
         }
     },
     methods: {
@@ -160,14 +269,101 @@ export default {
             this.barcode = "";
             this.disabled = false;
         },
-        setPrinter() {
-            if (!this.printer_name) {
-                swalNotif.error("Please Select Printer");
-                return;
-            }
-            localStorage.setItem("printer_name", this.printer_name);
-            swalNotif.success("Printer Setting Updated");
-        }
+        initValue() {
+            this.name = "";
+            this.title = "";
+            this.company = "";
+            this.email = "";
+            this.phone = "";
+        },
+        getRegisterData() {
+            this.globalLoader.show = true;
+            const vm = this;
+            axios.post("/api/v1/web/register/data/get", {
+            }, {
+                headers: {
+                    token: localStorage.getItem('token'),
+                }
+            }).then(res => {
+                if (res.data.status == 1) {
+                    if (res.data.data.exhibitions.length == 0) {
+                        swalNotif.info("Exhibitions Not Found, Please Contact Admin!");
+                        vm.hasExhibitions = false;
+                        return;
+                    }
+                    vm.list_country = res.data.data.country.map(item => ({
+                        label: item.country_name,
+                        value: item.idcountry
+                    }));
+                    vm.list_exhibitions = res.data.data.exhibitions.map(item => ({
+                        label: item.name,
+                        value: item.idexhibitions
+                    }));
+                    vm.exhibitions = res.data.data.exhibitions[0].idexhibitions;
+                    vm.getSubExhibitions();
+                } else {
+                    swalNotif.error(res.data.message);
+                }
+            }).catch(res => {
+                swalNotif.error("Error Get Data Exhibitions!");
+            }).finally(function () {
+                vm.globalLoader.show = false;
+            });
+        },
+        getSubExhibitions() {
+            this.globalLoader.show = true;
+            const vm = this;
+            axios.post("/api/v1/web/register/sub/exhibitions/get", {
+                idexhibitions: vm.exhibitions
+            }, {
+                headers: {
+                    token: localStorage.getItem('token'),
+                }
+            }).then(res => {
+                if (res.data.status == 1) {
+                    vm.list_sub_exhibitions = res.data.data.map(item => ({
+                        label: item.nama,
+                        value: item.idsubexhibitions
+                    }));
+                    vm.sub_exhibitions = res.data.data[0].idsubexhibitions;
+                } else {
+                    swalNotif.error(res.data.message);
+                }
+            }).catch(res => {
+                swalNotif.error("Error Get Data!");
+            }).finally(function () {
+                vm.globalLoader.show = false;
+            });
+        },
+        registrasi() {
+            this.globalLoader.show = true;
+            const vm = this;
+            axios.post("/api/v1/web/register/add", {
+                exhibitions: vm.exhibitions,
+                sub_exhibitions: vm.sub_exhibitions,
+                name: vm.name,
+                title: vm.title,
+                company: vm.company,
+                email: vm.email,
+                phone: vm.phone,
+                country: vm.country,
+            }, {
+                headers: {
+                    token: localStorage.getItem('token'),
+                }
+            }).then(async res => {
+                if (res.data.status == 1) {
+                    vm.data_print = res.data.data;
+                    await vm.print();
+                } else {
+                    swalNotif.error(res.data.message);
+                }
+            }).catch(res => {
+                swalNotif.error("Error Registrasi!");
+            }).finally(function () {
+                vm.globalLoader.show = false;
+            });
+        },
 
     },
     mounted() {
@@ -177,6 +373,12 @@ export default {
             this.connecting = false;
             this.status = "Printer Connected";
         }
+        const vm = this;
+        if (this.printer_name) {
+            this.connectQzTray();
+        }
+        this.loading = false;
+        this.getRegisterData();
     },
     beforeUnmount() {
         this.safeDiconnect();
