@@ -14,8 +14,7 @@
             </div>
         </div>
         <div class="card-footer">
-            <!-- <button class="btn btn-success m-1" @click="setPrinter">Update Setting</button> -->
-            <button class="btn btn-success m-1" @click="connectQzTray">Connect</button>
+            <button class="btn btn-success m-1" @click="setPrinter">Update Setting</button>
         </div>
     </div>
 </template>
@@ -55,6 +54,7 @@ export default {
             // Printer
             status: "Printer Not Connected",
             printer_name: localStorage.getItem("printer_name"),
+            list_printer: [],
             connected: false,
             connecting: false,
             showLaunchHint: false,
@@ -82,13 +82,6 @@ export default {
                 endOfDoc: null,
                 perSpool: 1,
             },
-            validate: yup.object({
-                name: yup.string().required("Name is required"),
-                title: yup.string().required("Title is required"),
-                company: yup.string().required("Company is required"),
-                email: yup.string().required("Email is required").email("Email is invalid"),
-                phone: yup.string().required("Phone is required"),
-            }),
         }
     },
     methods: {
@@ -157,7 +150,18 @@ export default {
                     // this.printer_name = "Argox CP-2140 PPLB"
                     // this.list_print = await qz.printers.find();
 
-                    this.cfg = qz.configs.create(this.printer_name);
+                    const result = await qz.printers.find();
+                    this.list_printer = Array.isArray(result) ? result.map(item => (
+                        {
+                            label: item,
+                            value: item
+                        }
+                    )) : [result];
+                    if (this.list_printer.length > 0 || !this.printer_name) {
+                        this.printer_name = this.list_printer[0];
+                    }
+
+                    // this.cfg = qz.configs.create(this.printer_name);
                     this.connecting = false;
                 }).catch((err) => {
                     swalNotif.error("Please Launch Printer First");
@@ -212,101 +216,14 @@ export default {
             this.barcode = "";
             this.disabled = false;
         },
-        initValue() {
-            this.name = "";
-            this.title = "";
-            this.company = "";
-            this.email = "";
-            this.phone = "";
-        },
-        getRegisterData() {
-            this.globalLoader.show = true;
-            const vm = this;
-            axios.post("/api/v1/web/register/data/get", {
-            }, {
-                headers: {
-                    token: localStorage.getItem('token'),
-                }
-            }).then(res => {
-                if (res.data.status == 1) {
-                    if (res.data.data.exhibitions.length == 0) {
-                        swalNotif.info("Exhibitions Not Found, Please Contact Admin!");
-                        vm.hasExhibitions = false;
-                        return;
-                    }
-                    vm.list_country = res.data.data.country.map(item => ({
-                        label: item.country_name,
-                        value: item.idcountry
-                    }));
-                    vm.list_exhibitions = res.data.data.exhibitions.map(item => ({
-                        label: item.name,
-                        value: item.idexhibitions
-                    }));
-                    vm.exhibitions = res.data.data.exhibitions[0].idexhibitions;
-                    vm.getSubExhibitions();
-                } else {
-                    swalNotif.error(res.data.message);
-                }
-            }).catch(res => {
-                swalNotif.error("Error Get Data Exhibitions!");
-            }).finally(function () {
-                vm.globalLoader.show = false;
-            });
-        },
-        getSubExhibitions() {
-            this.globalLoader.show = true;
-            const vm = this;
-            axios.post("/api/v1/web/register/sub/exhibitions/get", {
-                idexhibitions: vm.exhibitions
-            }, {
-                headers: {
-                    token: localStorage.getItem('token'),
-                }
-            }).then(res => {
-                if (res.data.status == 1) {
-                    vm.list_sub_exhibitions = res.data.data.map(item => ({
-                        label: item.nama,
-                        value: item.idsubexhibitions
-                    }));
-                    vm.sub_exhibitions = res.data.data[0].idsubexhibitions;
-                } else {
-                    swalNotif.error(res.data.message);
-                }
-            }).catch(res => {
-                swalNotif.error("Error Get Data!");
-            }).finally(function () {
-                vm.globalLoader.show = false;
-            });
-        },
-        registrasi() {
-            this.globalLoader.show = true;
-            const vm = this;
-            axios.post("/api/v1/web/register/add", {
-                exhibitions: vm.exhibitions,
-                sub_exhibitions: vm.sub_exhibitions,
-                name: vm.name,
-                title: vm.title,
-                company: vm.company,
-                email: vm.email,
-                phone: vm.phone,
-                country: vm.country,
-            }, {
-                headers: {
-                    token: localStorage.getItem('token'),
-                }
-            }).then(async res => {
-                if (res.data.status == 1) {
-                    vm.data_print = res.data.data;
-                    await vm.print();
-                } else {
-                    swalNotif.error(res.data.message);
-                }
-            }).catch(res => {
-                swalNotif.error("Error Registrasi!");
-            }).finally(function () {
-                vm.globalLoader.show = false;
-            });
-        },
+        setPrinter() {
+            if (!this.printer_name) {
+                swalNotif.error("Please Select Printer");
+                return;
+            }
+            localStorage.setItem("printer_name", this.printer_name);
+            swalNotif.success("Printer Setting Updated");
+        }
 
     },
     mounted() {
