@@ -88,6 +88,8 @@ export default {
             try {
                 await this.connectQzTray();
                 const result = await qz.printers.find();
+                console.log(result);
+
 
                 this.list_printer = Array.isArray(result) ? result.map(item => (
                     {
@@ -136,9 +138,9 @@ export default {
     },
     mounted() {
         this.setupQzSecureOnce();
-        setTimeout(() => {
-            this.loadPrinter();
-        }, 1000);
+        // setTimeout(() => {
+        //     this.loadPrinter();
+        // }, 1000);
     },
     beforeUnmount() {
         this.safeDiconnect();
