@@ -14,6 +14,7 @@
             </div>
         </div>
         <div class="card-footer">
+            <button class="btn btn-success m-1" @click="connectQzTray">Connect</button>
             <button class="btn btn-success m-1" @click="setPrinter">Update Setting</button>
         </div>
     </div>
@@ -114,22 +115,6 @@ export default {
                 };
             });
         },
-        launchQzTray() {
-            if (this.connected) {
-                swalNotif.info("Printer Already Connected");
-                return;
-            }
-            if (!this.connecting) {
-                window.location.href = "qz:launch";
-                setTimeout(async () => {
-                    await this.connectQzTray();
-                }, 5000);
-            }
-            else {
-                swalNotif.info("Connecting In Progress");
-                return;
-            }
-        },
         async connectQzTray() {
             if (this.connecting) {
                 swalNotif.info("Connecting In Progress");
@@ -228,17 +213,7 @@ export default {
     },
     mounted() {
         this.setupQzSecureOnce();
-        if (qz.websocket.isActive()) {
-            this.connected = true;
-            this.connecting = false;
-            this.status = "Printer Connected";
-        }
-        const vm = this;
-        if (this.printer_name) {
-            this.connectQzTray();
-        }
-        this.loading = false;
-        this.getRegisterData();
+        this.connectQzTray();
     },
     beforeUnmount() {
         this.safeDiconnect();
