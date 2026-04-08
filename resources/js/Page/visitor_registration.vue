@@ -7,7 +7,7 @@
             <h5 v-show="!hasExhibitions">Exhibitions Closed, Pelase Contact Admin to Register Visitor</h5>
             <h5 v-show="!printer_name">Please Init Printer Setting</h5>
         </div>
-        <div class="card-body" v-show="hasExhibitions">
+        <div class="card-body" v-show="hasExhibitions && printer_name">
             <Form :validation-schema="validate" @submit="registrasi">
                 <div v-show="connected">
                     <div class="form-group">

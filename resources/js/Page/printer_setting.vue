@@ -1,78 +1,21 @@
 <template>
     <div class="card">
         <div class="card-header">
-            <h5>Visitor Registration Manual</h5>
+            <h5>Printer Setting
+                <!-- <button class="btn btn-primary m-1" @click="refreshPrinter">Refresh Printer</button> -->
+            </h5>
         </div>
-        <div class="card-body" v-show="!hasExhibitions || !printer_name">
-            <h5 v-show="!hasExhibitions">Exhibitions Closed, Pelase Contact Admin to Register Visitor</h5>
-            <h5 v-show="!printer_name">Please Init Printer Setting</h5>
+        <div class="card-body">
+            <p>Status : {{ status }}</p>
+            <div class="form-group">
+                <label for="input-1">Printers</label>
+                <v-select class="form-control" placeholder="Select an Printer Name" :options="list_printer"
+                    label="label" :reduce="option => option.value" v-model="printer_name" :clearable="false"></v-select>
+            </div>
         </div>
-        <div class="card-body" v-show="hasExhibitions">
-            <Form :validation-schema="validate" @submit="registrasi">
-                <div v-show="connected">
-                    <div class="form-group">
-                        <label for="input-1">Exhibitions</label>
-                        <v-select class="form-control" placeholder="Select an Exhibitions" :options="list_exhibitions"
-                            label="label" :reduce="option => option.value" v-model="exhibitions"
-                            @option:selected="getSubExhibitions" :clearable="false"></v-select>
-                    </div>
-                    <div class="form-group">
-                        <label for="input-1">Sub Exhibitions</label>
-                        <v-select class="form-control" placeholder="Select an Sub Exhibitions"
-                            :options="list_sub_exhibitions" label="label" :reduce="option => option.value"
-                            v-model="sub_exhibitions" :clearable="false"></v-select>
-                    </div>
-                    <div class="form-group">
-                        <label for="name">Name *</label>
-                        <Field name="name" v-slot="{ field }" v-model="name">
-                            <input v-bind="field" ref="name_visitor" class="form-control" id="name"
-                                placeholder="Name *" />
-                        </Field>
-                        <ErrorMessage style="color: red;" name="name" />
-                    </div>
-                    <div class="form-group">
-                        <label for="title">Title *</label>
-                        <Field name="title" type="text" class="form-control" id="title" placeholder="Title *"
-                            v-model="title">
-                        </Field>
-                        <ErrorMessage style="color: red;" name="title" />
-                    </div>
-                    <div class="form-group">
-                        <label for="company">Company *</label>
-                        <Field name="company" type="text" class="form-control" id="company" placeholder="Company *"
-                            v-model="company">
-                        </Field>
-                        <ErrorMessage style="color: red;" name="company" />
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email *</label>
-                        <Field name="email" type="text" class="form-control" id="email" placeholder="Email *"
-                            v-model="email">
-                        </Field>
-                        <ErrorMessage style="color: red;" name="email" />
-                    </div>
-                    <div class="form-group">
-                        <label for="phone">Phone *</label>
-                        <Field name="phone" type="text" class="form-control" id="phone" placeholder="Phone *"
-                            v-model="phone">
-                        </Field>
-                        <ErrorMessage style="color: red;" name="phone" />
-                    </div>
-                    <div class="form-group">
-                        <label for="input-1">Country</label>
-                        <v-select class="form-control" placeholder="Select an Country" :options="list_country"
-                            label="label" :reduce="option => option.value" v-model="country"
-                            :clearable="false"></v-select>
-                    </div>
-                </div>
-                <p class="text-mute">{{ status }} | {{ printer_name }}</p>
-                <button type="button" class="btn btn-primary ml-1" @click="launchQzTray" v-show="!connected">Launch
-                    Printer</button>
-                <button type="button" class="btn btn-primary ml-1" @click="connectQzTray" v-show="!connected">Connect
-                    Printer</button>
-                <button type="submit" class="btn btn-primary ml-1" @click="connectQzTray"
-                    v-show="connected">Register</button>
-            </form>
+        <div class="card-footer">
+            <!-- <button class="btn btn-success m-1" @click="setPrinter">Update Setting</button> -->
+            <button class="btn btn-success m-1" @click="connectQzTray">Connect</button>
         </div>
     </div>
 </template>
