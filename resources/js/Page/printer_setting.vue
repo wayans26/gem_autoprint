@@ -5,6 +5,7 @@
             </h5>
         </div>
         <div class="card-body">
+            <p>Status : {{ status }}</p>
             <div class="form-group">
                 <label for="input-1">Printers</label>
                 <v-select class="form-control" placeholder="Select an Printer Name" :options="list_printer"
@@ -135,7 +136,9 @@ export default {
     },
     mounted() {
         this.setupQzSecureOnce();
-        this.loadPrinter();
+        setTimeout(() => {
+            this.loadPrinter();
+        }, 1000);
     },
     beforeUnmount() {
         this.safeDiconnect();
