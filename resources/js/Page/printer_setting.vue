@@ -14,6 +14,7 @@
         </div>
         <div class="card-footer">
             <button class="btn btn-success m-1" @click="setPrinter">Update Setting</button>
+            <button class="btn btn-success m-1" @click="connectQzTray">Connect</button>
         </div>
     </div>
 </template>
