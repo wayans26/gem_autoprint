@@ -1,7 +1,8 @@
 <template>
     <div class="card">
         <div class="card-header">
-            <h5>Printer Setting <button class="btn btn-primary m-1" @click="refreshPrinter">Refresh Printer</button>
+            <h5>Printer Setting
+                <!-- <button class="btn btn-primary m-1" @click="refreshPrinter">Refresh Printer</button> -->
             </h5>
         </div>
         <div class="card-body">
@@ -13,7 +14,8 @@
             </div>
         </div>
         <div class="card-footer">
-            <button class="btn btn-success m-1" @click="setPrinter">Update Setting</button>
+            <!-- <button class="btn btn-success m-1" @click="setPrinter">Update Setting</button> -->
+            <button class="btn btn-success m-1" @click="connectQzTray">Connect</button>
         </div>
     </div>
 </template>
@@ -67,41 +69,49 @@ export default {
                 };
             });
         },
-        async connectQzTray() {
-            if (qz.websocket.isActive()) return;
-            this.status = "Connectiong...";
-
-            await qz.websocket.connect({ retries: 5, delay: 1 }).then(async () => {
-                this.connected = true;
-                this.status = "Qz Connected";
-            }).catch((err) => {
-                swalNotif.error("Please Launch QZ Try");
-                this.status = "Printer Not Connected";
-                this.connecting = false;
-            });
-        },
-        async loadPrinter() {
-            if (this.connecting) {
-                swalNotif.info("Search In Progress");
+        launchQzTray() {
+            if (this.connected) {
+                swalNotif.info("Printer Already Connected");
                 return;
             }
-            try {
-                await this.connectQzTray();
-                const result = await qz.printers.find();
+            if (!this.connecting) {
+                window.location.href = "qz:launch";
+                setTimeout(async () => {
+                    await this.connectQzTray();
+                }, 5000);
+            }
+            else {
+                swalNotif.info("Connecting In Progress");
+                return;
+            }
+        },
+        async connectQzTray() {
+            if (this.connecting) {
+                swalNotif.info("Connecting In Progress");
+                return;
+            }
+            this.connecting = true;
+            if (qz.websocket.isActive()) {
+                this.connected = true;
+                this.connecting = false;
+                this.status = "Printer Already Connected";
+            }
+            else {
+                this.status = "Connectiong...";
+                await qz.websocket.connect({ retries: 5, delay: 1 }).then(async () => {
+                    this.connected = true;
+                    this.status = "Printer Connected";
+                    // this.printer_name = await qz.printers.getDefault();
+                    // this.printer_name = "Argox CP-2140 PPLB"
+                    // this.list_print = await qz.printers.find();
 
-                this.list_printer = Array.isArray(result) ? result.map(item => (
-                    {
-                        label: item,
-                        value: item
-                    }
-                )) : [result];
-                if (this.list_printer.length > 0 || !this.printer_name) {
-                    this.printer_name = this.list_printer[0];
-                }
-                this.status = "Printer Load Success";
-            } catch (error) {
-                swalNotif.error(error.message);
-                this.status = "Printer Load Failed";
+                    this.cfg = qz.configs.create(this.printer_name);
+                    this.connecting = false;
+                }).catch((err) => {
+                    swalNotif.error("Please Launch Printer First");
+                    this.status = "Printer Not Connected";
+                    this.connecting = false;
+                });
             }
         },
         async safeDiconnect() {
@@ -121,8 +131,34 @@ export default {
                 console.error("Failed to disconnect:", err);
             }
         },
-        async refreshPrinter() {
-            await this.loadPrinter();
+        async print() {
+            if (!this.connected) {
+                notification.notif_info("Please Launch Printer First");
+                return;
+            }
+            this.status = `Printing on ${this.printer_name}`;
+            if (!this.data_print) {
+                notification.notif_info("Data Not Found");
+                return;
+            }
+            if (this.cfg == null) {
+                notification.notif_info("Please Install Your Printer Driver");
+                return;
+            }
+            await qz.print(this.cfg, [{ type: "raw", format: "plain", data: this.data_print }]);
+            this.status = `Printed Successfully`;
+            this.initValue();
+            notification.notif_success("Printed Successfully");
+            this.$nextTick(() => {
+                this.$refs.name_visitor.focus();
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+            this.globalLoader.show = false;
+            this.barcode = "";
+            this.disabled = false;
         },
         setPrinter() {
             if (!this.printer_name) {
@@ -136,9 +172,11 @@ export default {
     },
     mounted() {
         this.setupQzSecureOnce();
-        setTimeout(() => {
-            this.loadPrinter();
-        }, 1000);
+        if (qz.websocket.isActive()) {
+            this.connected = true;
+            this.connecting = false;
+            this.status = "Printer Connected";
+        }
     },
     beforeUnmount() {
         this.safeDiconnect();
