@@ -375,7 +375,9 @@ export default {
         }
         const vm = this;
         if (this.printer_name) {
-            this.connectQzTray();
+            setTimeout(() => {
+                this.connectQzTray();
+            }, 500);
         }
         this.loading = false;
         this.getRegisterData();
