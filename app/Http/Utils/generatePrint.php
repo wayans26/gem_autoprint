@@ -70,17 +70,17 @@ class generatePrint
         //     "P1"
         // ]) . "\r\n";
         $data_print = implode("\r\n", [
-            $backfeedCommand,
+            // $backfeedCommand,
             "N",
-            "q609",
-            "Q200,0,+200",
+            "q100",
+            "Q100,0,+200",
             "S2",
             "D9",
             // 'A' . makeid::calculateCentreX($name, $textSize) . ',' . ($startYText - ($pengurangan * 0)) . ',2,' . $textSize . ',' . $vhmul . ',' . $vhmul . ',N,"' . Str::upper(makeid::esc($name))  . '"',
             // 'A' . makeid::calculateCentreX($title, $textSize) . ',' . ($startYText - ($pengurangan * 1)) . ',2,' . $textSize . ',' . $vhmul . ',' . $vhmul . ',N,"' . Str::upper(makeid::esc($title))  . '"',
             // ...$array_company,
             // 'b' . $barcodePositionX . ',' . $barcodePositionY . ',Q,m2,' . $barcodeSize . ',eH,"' . makeid::esc($barcode) . '"',
-            "JF",
+            // "JF",
             "P1"
         ]) . "\r\n";
         return $data_print;
