@@ -45,7 +45,7 @@ class generatePrint
 
         $dpi = 203;
 
-        $feedAdjustmentInch = 0.15;
+        $feedAdjustmentInch = 1;
         $gapInch = 1.00;
         $topAdjustmentInch = 0.35;
         $backfeedValue = 220 + (int) round($feedAdjustmentInch * 100);
