@@ -30,7 +30,7 @@ export default {
         return {
             // Printer
             status: "Printer Not Connected",
-            printer_name: localStorage.getItem("printer_name"),
+            printer_name: "",
             list_printer: [],
             connected: false,
             connecting: false,
