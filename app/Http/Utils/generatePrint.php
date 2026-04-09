@@ -43,18 +43,29 @@ class generatePrint
             array_push($array_company, 'A' . makeid::calculateCentreX($company, $textSize) . ',370,2,' . $textSize . ',' . $vhmul . ',' . $vhmul . ',N,"' . Str::upper(makeid::esc($company))  . '"');
         }
 
+        $dpi = 203;
+
+        $feedAdjustmentInch = 0.15;
+        $gapInch = 1.00;
+        $topAdjustmentInch = 0.35;
+        $backfeedValue = 220 + (int) round($feedAdjustmentInch * 100);
+        $backfeedCommand = "\x02f{$backfeedValue}";
+        $gapDots = (int) round($gapInch * $dpi);
+        $topAdjustmentDots = (int) round($topAdjustmentInch * $dpi);
+
         $data_print = implode("\r\n", [
-            "\x02f235",
+            $backfeedCommand,
             "N",
             "q832",
-            "Q609,24",
+            // "Q609,24",
+            "Q609," . $gapDots . "," . "+" . $topAdjustmentDots,
             // "Q609,0",
             "S2",
             "D9",
-            'A' . makeid::calculateCentreX($name, $textSize) . ',' . ($startYText - ($pengurangan * 0)) . ',2,' . $textSize . ',' . $vhmul . ',' . $vhmul . ',N,"' . Str::upper(makeid::esc($name))  . '"',
-            'A' . makeid::calculateCentreX($title, $textSize) . ',' . ($startYText - ($pengurangan * 1)) . ',2,' . $textSize . ',' . $vhmul . ',' . $vhmul . ',N,"' . Str::upper(makeid::esc($title))  . '"',
-            ...$array_company,
-            'b' . $barcodePositionX . ',' . $barcodePositionY . ',Q,m2,' . $barcodeSize . ',eH,"' . makeid::esc($barcode) . '"',
+            // 'A' . makeid::calculateCentreX($name, $textSize) . ',' . ($startYText - ($pengurangan * 0)) . ',2,' . $textSize . ',' . $vhmul . ',' . $vhmul . ',N,"' . Str::upper(makeid::esc($name))  . '"',
+            // 'A' . makeid::calculateCentreX($title, $textSize) . ',' . ($startYText - ($pengurangan * 1)) . ',2,' . $textSize . ',' . $vhmul . ',' . $vhmul . ',N,"' . Str::upper(makeid::esc($title))  . '"',
+            // ...$array_company,
+            // 'b' . $barcodePositionX . ',' . $barcodePositionY . ',Q,m2,' . $barcodeSize . ',eH,"' . makeid::esc($barcode) . '"',
             "P1"
         ]) . "\r\n";
         return $data_print;
