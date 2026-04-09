@@ -1,7 +1,7 @@
 <template>
     <div class="card">
         <div class="card-header">
-            <h5>Printer Setting {{ printer_name }} | {{ list_printer }}
+            <h5>Printer Setting
                 <button class="btn btn-primary m-1" @click="refreshPrinter">Refresh Printer</button>
             </h5>
         </div>
