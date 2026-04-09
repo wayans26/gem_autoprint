@@ -14,7 +14,7 @@ class generatePrint
         $pengurangan = $textSize === "3" ? 50 : ($textSize === "2" ? 40 : 30);
         $vhmul = $textSize === "1" ? "2" : "2";
         $barcodeSize = $textSize === "3" ? "s6" : ($textSize === "2" ? "s6" : "s5");
-        $barcodePositionX = $textSize === "3" ? "340" : ($textSize === "2" ? "345" : "350"); //makin besar makin ke kiri
+        $barcodePositionX = $textSize === "3" ? "335" : ($textSize === "2" ? "345" : "350"); //makin besar makin ke kiri
         $barcodePositionY = $textSize === "3" ? "100" : ($textSize === "2" ? "100" : "100"); //makin kecil makin turun
         $array_company = [];
         if ($textSize === "1") {

@@ -144,6 +144,8 @@ export default {
                 swalNotif.error("Please Select Printer");
                 return;
             }
+            console.log(this.printer_name);
+
             localStorage.setItem("printer_name", this.printer_name);
             swalNotif.success("Printer Setting Updated");
         }
