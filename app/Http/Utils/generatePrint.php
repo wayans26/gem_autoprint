@@ -73,7 +73,7 @@ class generatePrint
             // $backfeedCommand,
             "N",
             "q100",
-            "Q100,0,+200",
+            "Q100,0",
             "S2",
             "D9",
             // 'A' . makeid::calculateCentreX($name, $textSize) . ',' . ($startYText - ($pengurangan * 0)) . ',2,' . $textSize . ',' . $vhmul . ',' . $vhmul . ',N,"' . Str::upper(makeid::esc($name))  . '"',
