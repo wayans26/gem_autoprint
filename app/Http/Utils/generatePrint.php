@@ -10,7 +10,7 @@ class generatePrint
     public static function PPLB($name, $title, $company, $barcode)
     {
         $textSize = Str::length($company) <= 20 ? "3" : (Str::length($company) <= 84 ? "2" : "1");
-        $startYText = 470;
+        $startYText = 445;
         $pengurangan = $textSize === "3" ? 50 : ($textSize === "2" ? 40 : 30);
         $vhmul = $textSize === "1" ? "2" : "2";
         $barcodeSize = $textSize === "3" ? "s6" : ($textSize === "2" ? "s6" : "s5");
@@ -46,8 +46,8 @@ class generatePrint
         $data_print = implode("\r\n", [
             "N",
             "q832",
-            "Q609,24",
-            // "Q609,0",
+            // "Q609,24",
+            "Q609,0",
             "S2",
             "D9",
             'A' . makeid::calculateCentreX($name, $textSize) . ',' . ($startYText - ($pengurangan * 0)) . ',2,' . $textSize . ',' . $vhmul . ',' . $vhmul . ',N,"' . Str::upper(makeid::esc($name))  . '"',
