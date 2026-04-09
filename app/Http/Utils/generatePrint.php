@@ -53,13 +53,27 @@ class generatePrint
         $gapDots = (int) round($gapInch * $dpi);
         $topAdjustmentDots = (int) round($topAdjustmentInch * $dpi);
 
+        // $data_print = implode("\r\n", [
+        //     $backfeedCommand,
+        //     "N",
+        //     "q832",
+        //     "Q609,24",
+        //     "Q609," . $gapDots . "," . "+" . $topAdjustmentDots,
+        //     "Q609,0,+200",
+        //     "S2",
+        //     "D9",
+        //     'A' . makeid::calculateCentreX($name, $textSize) . ',' . ($startYText - ($pengurangan * 0)) . ',2,' . $textSize . ',' . $vhmul . ',' . $vhmul . ',N,"' . Str::upper(makeid::esc($name))  . '"',
+        //     'A' . makeid::calculateCentreX($title, $textSize) . ',' . ($startYText - ($pengurangan * 1)) . ',2,' . $textSize . ',' . $vhmul . ',' . $vhmul . ',N,"' . Str::upper(makeid::esc($title))  . '"',
+        //     ...$array_company,
+        //     'b' . $barcodePositionX . ',' . $barcodePositionY . ',Q,m2,' . $barcodeSize . ',eH,"' . makeid::esc($barcode) . '"',
+        //     "JF",
+        //     "P1"
+        // ]) . "\r\n";
         $data_print = implode("\r\n", [
             $backfeedCommand,
             "N",
             "q832",
-            // "Q609,24",
-            // "Q609," . $gapDots . "," . "+" . $topAdjustmentDots,
-            "Q609,0,+200",
+            "Q200,0,+200",
             "S2",
             "D9",
             // 'A' . makeid::calculateCentreX($name, $textSize) . ',' . ($startYText - ($pengurangan * 0)) . ',2,' . $textSize . ',' . $vhmul . ',' . $vhmul . ',N,"' . Str::upper(makeid::esc($name))  . '"',
