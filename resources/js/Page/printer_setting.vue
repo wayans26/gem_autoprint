@@ -1,7 +1,7 @@
 <template>
     <div class="card">
         <div class="card-header">
-            <h5>Printer Setting
+            <h5>Printer Setting {{ printer_name }} | {{ list_printer }}
                 <button class="btn btn-primary m-1" @click="refreshPrinter">Refresh Printer</button>
             </h5>
         </div>
@@ -144,8 +144,6 @@ export default {
                 swalNotif.error("Please Select Printer");
                 return;
             }
-            console.log(this.printer_name);
-
             localStorage.setItem("printer_name", this.printer_name);
             swalNotif.success("Printer Setting Updated");
         }
