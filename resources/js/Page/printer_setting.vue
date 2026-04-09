@@ -91,9 +91,9 @@ export default {
                             value: item
                         }
                     )) : [result];
-                    if (this.list_printer.length > 0 || !this.printer_name) {
-                        this.printer_name = this.list_printer[0];
-                    }
+                    // if (this.list_printer.length > 0 || !this.printer_name) {
+                    //     this.printer_name = this.list_printer[0];
+                    // }
 
                     // this.cfg = qz.configs.create(this.printer_name);
                     this.connecting = false;
