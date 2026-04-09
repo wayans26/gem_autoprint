@@ -118,4 +118,14 @@ class registerController extends Controller
 
         return responseMessage::responseMessageWithData(1, "Success", 200, $data_print);
     }
+    function testPrint(Request $req)
+    {
+
+
+        $data_print = generatePrint::PPLB("TEST", "TEST", "TEST", "BARCODE");
+
+        // dd($data_print);
+
+        return responseMessage::responseMessageWithData(1, "Success", 200, $data_print);
+    }
 }

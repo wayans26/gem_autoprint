@@ -72,6 +72,7 @@
                     Printer</button>
                 <button type="submit" class="btn btn-primary ml-1" @click="connectQzTray"
                     v-show="connected">Register</button>
+                <button type="submit" class="btn btn-primary ml-1" @click="testPrint">Test Print</button>
             </form>
         </div>
     </div>
@@ -348,6 +349,26 @@ export default {
                 phone: vm.phone,
                 country: vm.country,
             }, {
+                headers: {
+                    token: localStorage.getItem('token'),
+                }
+            }).then(async res => {
+                if (res.data.status == 1) {
+                    vm.data_print = res.data.data;
+                    await vm.print();
+                } else {
+                    swalNotif.error(res.data.message);
+                }
+            }).catch(res => {
+                swalNotif.error("Error Registrasi!");
+            }).finally(function () {
+                vm.globalLoader.show = false;
+            });
+        },
+        testPrint() {
+            this.globalLoader.show = true;
+            const vm = this;
+            axios.post("/api/v1/web/register/test", {}, {
                 headers: {
                     token: localStorage.getItem('token'),
                 }

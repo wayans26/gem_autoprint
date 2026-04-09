@@ -93,6 +93,7 @@ Route::prefix($version)->group(function () use ($prefixWeb, $prefixMobile) {
                 Route::post('/register/data/get', 'getRegisterData')->middleware('permission:visitor_registrasi,view');
                 Route::post('/register/sub/exhibitions/get', 'getSubExhibitions')->middleware('permission:visitor_registrasi,view');
                 Route::post('/register/add', 'registrasi')->middleware('permission:visitor_registrasi,create');
+                Route::post('/register/test', 'testPrint')->middleware('permission:visitor_registrasi,create');
             });
 
             Route::controller(exhibitionsController::class)->group(function () {
