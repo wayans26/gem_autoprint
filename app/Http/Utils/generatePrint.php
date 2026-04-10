@@ -2,7 +2,10 @@
 
 namespace App\Http\Utils;
 
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Str;
+use Picqer\Barcode\Renderers\SvgRenderer;
+use Picqer\Barcode\Types\TypeCode128;
 
 class generatePrint
 {
@@ -11,10 +14,11 @@ class generatePrint
     {
         $textSize = Str::length($company) <= 20 ? "3" : (Str::length($company) <= 84 ? "2" : "1");
         $startYText = 470;
+        $offsetBarcode = Str::length($barcode) <= 18 ? 20 : (Str::length($barcode) <= 20 ? 10 : 0);
         $pengurangan = $textSize === "3" ? 50 : ($textSize === "2" ? 40 : 30);
         $vhmul = $textSize === "1" ? "2" : "2";
         $barcodeSize = $textSize === "3" ? "s6" : ($textSize === "2" ? "s6" : "s5");
-        $barcodePositionX = $textSize === "3" ? "330" : ($textSize === "2" ? "330" : "350"); //makin besar makin ke kiri
+        (string) $barcodePositionX = $textSize === "3" ? (320 + $offsetBarcode) : ($textSize === "2" ? (330 + $offsetBarcode) : (350 + $offsetBarcode)); //makin besar makin ke kiri
         $barcodePositionY = $textSize === "3" ? "100" : ($textSize === "2" ? "100" : "100"); //makin kecil makin turun
         $array_company = [];
         if ($textSize === "1") {
@@ -82,5 +86,28 @@ class generatePrint
         //     "P1"
         // ]) . "\r\n";
         return $data_print;
+    }
+
+    public static function PDFPPLB($name, $title, $company, $barcode)
+    {
+        $barcodeSvg = (new TypeCode128())->getBarcode($barcode);
+        $renderer = new SvgRenderer();
+        $renderer->setSvgType($renderer::TYPE_SVG_INLINE);
+        $barcodeSvgRendered = $renderer->render($barcodeSvg, 360, 70);
+        $widthMM = 104.1;
+        $heightMM = 76.2;
+        $pdf = Pdf::loadView('Print.barcode', [
+            'nama'  => $name,
+            'job'   => $title,
+            'company' => $company,
+            'barcode' => $barcodeSvgRendered,
+        ])->setPaper([
+            0,
+            0,
+            makeid::mmToPoint($widthMM),
+            makeid::mmToPoint($heightMM)
+        ])->setWarnings(false);
+        $pdfBinary = $pdf->output();
+        return base64_encode($pdfBinary);
     }
 }

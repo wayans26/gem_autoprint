@@ -52,4 +52,8 @@ class makeid
         $textWithDots = strlen($text) * $charWithDots;
         return $labelWidth - max(0, (int) round(($labelWidth - $textWithDots) / 2));
     }
+    public static function mmToPoint(float $mm)
+    {
+        return $mm * 72 / 25.4;
+    }
 }

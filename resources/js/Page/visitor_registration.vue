@@ -215,7 +215,18 @@ export default {
                     // this.printer_name = "Argox CP-2140 PPLB"
                     // this.list_print = await qz.printers.find();
 
-                    this.cfg = qz.configs.create(this.printer_name);
+                    this.cfg = qz.configs.create(this.printer_name, {
+                        size: {
+                            width: 104.1,
+                            height: 76.2,
+                        },
+                        units: 'mm',
+                        orientation: 'landscape',
+                        scaleContent: false,
+                        copies: 1,
+                        colorType: 'grayscale',
+                        jobName: 'Barcode Label Print',
+                    });
                     this.connecting = false;
                 }).catch((err) => {
                     swalNotif.error("Please Launch Printer First");
@@ -256,6 +267,49 @@ export default {
                 return;
             }
             await qz.print(this.cfg, [{ type: "raw", format: "plain", data: this.data_print }]);
+            this.status = `Printed Successfully`;
+            this.initValue();
+            notification.notif_success("Printed Successfully");
+            this.$nextTick(() => {
+                this.$refs.name_visitor.focus();
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+            this.globalLoader.show = false;
+            this.barcode = "";
+            this.disabled = false;
+        },
+        async printPdf() {
+            const vm = this;
+            if (!this.connected) {
+                notification.notif_info("Please Launch Printer First");
+                return;
+            }
+            this.status = `Printing on ${this.printer_name}`;
+            if (!this.data_print) {
+                notification.notif_info("Data Not Found");
+                return;
+            }
+            if (this.cfg == null) {
+                notification.notif_info("Please Install Your Printer Driver");
+                return;
+            }
+            const data = [
+                {
+                    type: 'pixel',
+                    format: 'pdf',
+                    flavor: 'base64',
+                    data: vm.data_print,
+                    options: {
+                        ignoreTransparency: true,
+                        altFontRendering: true,
+                        pageRanges: '1',
+                    },
+                },
+            ];
+            await qz.print(this.cfg, data);
             this.status = `Printed Successfully`;
             this.initValue();
             notification.notif_success("Printed Successfully");
@@ -355,7 +409,8 @@ export default {
             }).then(async res => {
                 if (res.data.status == 1) {
                     vm.data_print = res.data.data;
-                    await vm.print();
+                    // await vm.print();
+                    await vm.printPdf();
                 } else {
                     swalNotif.error(res.data.message);
                 }

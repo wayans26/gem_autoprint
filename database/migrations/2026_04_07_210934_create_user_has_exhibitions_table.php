@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('user_has_exhibitions', function (Blueprint $table) {
             $table->id('id');
             $table->string('user_id', 16);
-            $table->string('exhibition_id', 16);
+            $table->string('exhibition_id');
             $table->string('exhibitions_name');
             $table->timestamps();
         });
