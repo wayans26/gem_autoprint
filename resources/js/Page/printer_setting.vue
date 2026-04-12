@@ -7,7 +7,7 @@
         </div>
         <div class="card-body">
             <p>Status : {{ status }}</p>
-            <p>Printer Name : {{ printer_name }}</p>
+            <p>Printer Name : {{ saved_printed }}</p>
             <div class="form-group">
                 <label for="input-1">Printers</label>
                 <v-select class="form-control" placeholder="Select an Printer Name" :options="list_printer"
