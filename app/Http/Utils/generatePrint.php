@@ -61,7 +61,8 @@ class generatePrint
         $data_print = implode("\r\n", [
             "N",
             "q832",
-            "Q609,24",
+            // "Q609,24",
+            "Q609,0",
             "S2",
             "D9",
             'A' . makeid::calculateCentreX($name, $textSize) . ',' . ($startYText - ($pengurangan * 0)) . ',2,' . $textSize . ',' . $vhmul . ',' . $vhmul . ',N,"' . Str::upper(makeid::esc($name))  . '"',
