@@ -304,7 +304,7 @@ export default {
                     type: 'pixel',
                     format: 'pdf',
                     flavor: 'base64',
-                    data: vm.data_print,
+                    data: this.data_print,
                     options: {
                         ignoreTransparency: true,
                         altFontRendering: true,

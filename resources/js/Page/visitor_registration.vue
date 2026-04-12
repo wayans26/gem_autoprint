@@ -273,7 +273,7 @@ export default {
                     type: 'pixel',
                     format: 'pdf',
                     flavor: 'base64',
-                    data: vm.data_print,
+                    data: this.data_print,
                     options: {
                         ignoreTransparency: true,
                         altFontRendering: true,
@@ -430,7 +430,7 @@ export default {
                     swalNotif.error(res.data.message);
                 }
             }).catch(res => {
-                console.log(res);
+                // console.log(res);
 
                 swalNotif.error("Error Registrasi!");
             }).finally(function () {
