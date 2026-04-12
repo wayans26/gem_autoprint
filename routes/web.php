@@ -42,12 +42,12 @@ Route::get('/test', function () {
     $widthMM = 104.1;
     $heightMM = 76.2;
     $urlQr = "data:image/png;base64," . base64_encode($qrcode);
-    dd($urlQr);
+    // dd($urlQr);
     return view('Print.barcode',  [
         'nama'  => "TEST",
         'job'   => "Job",
         'company' => "COMPANY",
-        'barcodeSvg' => $qrcode,
+        'barcodeSvg' => $urlQr,
     ]);
 });
 
