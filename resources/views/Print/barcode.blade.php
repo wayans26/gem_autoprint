@@ -29,7 +29,7 @@
         /* Area aman agar tidak terpotong */
         .safe-area {
             position: absolute;
-            top: 16mm;
+            top: 12mm;
             right: 4mm;
             bottom: 16mm;
             left: 4mm;
@@ -63,7 +63,7 @@
         }
 
         .name {
-            margin-bottom: 0.1mm;
+            margin-bottom: 0.5mm;
             font-size: 12pt;
             font-weight: 700;
             line-height: 0.5mm;
@@ -71,7 +71,7 @@
         }
 
         .job {
-            margin-bottom: 0.1mm;
+            margin-bottom: 0.5mm;
             font-size: 12pt;
             font-weight: 700;
             line-height: 0.5mm;
@@ -79,7 +79,7 @@
         }
 
         .company {
-            margin-bottom: 0.1mm;
+            margin-bottom: 0.5mm;
             font-size: 12pt;
             font-weight: 700;
             line-height: 0.5mm;
