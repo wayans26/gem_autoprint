@@ -32,7 +32,7 @@ export default {
             // Printer
             status: "Printer Not Connected",
             printer_name: "",
-            saved_printed: localStorage.getItem("printer_name") ?? "",
+            saved_printed: localStorage.getItem("printer_name"),
             list_printer: [],
             connected: false,
             connecting: false,
@@ -147,7 +147,7 @@ export default {
                 return;
             }
             localStorage.setItem("printer_name", this.printer_name);
-            this.saved_printed = this.printer_name;
+            this.saved_printed = localStorage.getItem("printer_name");
             swalNotif.success("Printer Setting Updated");
         }
 
