@@ -54,6 +54,6 @@ export default defineConfig({
         },
     },
     esbuild: {
-        drop: ["console", "debugger"], // optional, kecilkan bundle
+        // drop: ["console", "debugger"], // optional, kecilkan bundle
     },
 });
