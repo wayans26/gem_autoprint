@@ -267,7 +267,21 @@ export default {
                 notification.notif_info("Please Install Your Printer Driver");
                 return;
             }
-            await qz.print(this.cfg, [{ type: "raw", format: "plain", data: this.data_print }]);
+            // await qz.print(this.cfg, [{ type: "raw", format: "plain", data: this.data_print }]);
+            const data = [
+                {
+                    type: 'pixel',
+                    format: 'pdf',
+                    flavor: 'base64',
+                    data: vm.data_print,
+                    options: {
+                        ignoreTransparency: true,
+                        altFontRendering: true,
+                        pageRanges: '1',
+                    },
+                },
+            ];
+            await qz.print(this.cfg, data);
             this.status = `Printed Successfully`;
             this.initValue();
             notification.notif_success("Printed Successfully");

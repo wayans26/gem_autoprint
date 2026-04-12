@@ -245,7 +245,20 @@ export default {
                     this.status = "Printer Connected";
                     // this.printer_name = await qz.printers.getDefault();
                     // this.printer_name = "Argox CP-2140 PPLB"
-                    this.cfg = qz.configs.create(this.printer_name);
+                    // this.cfg = qz.configs.create(this.printer_name);
+                    this.cfg = qz.configs.create(this.printer_name, {
+                        size: {
+                            width: 102,
+                            height: 76,
+                        },
+                        units: 'mm',
+                        orientation: 'portrait',
+                        // rotation: 90,
+                        scaleContent: false,
+                        copies: 1,
+                        colorType: 'grayscale',
+                        jobName: 'Barcode Label Print',
+                    });
                     this.connecting = false;
                 }).catch((err) => {
                     swalNotif.error("Please Launch Printer First");
@@ -285,7 +298,21 @@ export default {
                 notification.notif_info("Please Install Your Printer Driver");
                 return;
             }
-            await qz.print(this.cfg, [{ type: "raw", format: "plain", data: this.data_print }]);
+            // await qz.print(this.cfg, [{ type: "raw", format: "plain", data: this.data_print }]);
+            const data = [
+                {
+                    type: 'pixel',
+                    format: 'pdf',
+                    flavor: 'base64',
+                    data: vm.data_print,
+                    options: {
+                        ignoreTransparency: true,
+                        altFontRendering: true,
+                        pageRanges: '1',
+                    },
+                },
+            ];
+            await qz.print(this.cfg, data);
             this.status = `Printed Successfully`;
             this.globalLoader.show = false;
             this.barcode = "";
