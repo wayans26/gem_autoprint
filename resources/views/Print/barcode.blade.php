@@ -13,7 +13,7 @@
         body {
             margin: 0;
             padding: 0;
-            width: 104mm;
+            width: 102mm;
             height: 76mm;
             background: #ffffff;
             color: #000000;
@@ -22,8 +22,8 @@
 
         .page {
             position: relative;
-            width: 100%;
-            height: 100%;
+            width: 102mm;
+            height: 76mm;
         }
 
         /* Area aman agar tidak terpotong */
