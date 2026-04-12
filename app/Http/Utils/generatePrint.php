@@ -100,7 +100,7 @@ class generatePrint
             'nama'  => $name,
             'job'   => $title,
             'company' => $company,
-            'barcode' => $barcodeSvgRendered,
+            'barcodeSvg' => $barcodeSvgRendered,
         ])->setPaper([
             0,
             0,
