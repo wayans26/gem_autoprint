@@ -13,8 +13,8 @@
         body {
             margin: 0;
             padding: 0;
-            width: 102mm;
-            height: 76mm;
+            width: 100%;
+            height: 100%;
             background: #ffffff;
             color: #000000;
             font-family: DejaVu Sans, sans-serif;
@@ -22,8 +22,8 @@
 
         .page {
             position: relative;
-            width: 102mm;
-            height: 76mm;
+            width: 100%;
+            height: 100%;
         }
 
         /* Area aman agar tidak terpotong */
