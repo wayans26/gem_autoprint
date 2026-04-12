@@ -29,9 +29,9 @@
         /* Area aman agar tidak terpotong */
         .safe-area {
             position: absolute;
-            top: 12mm;
+            top: 16mm;
             right: 4mm;
-            bottom: 12mm;
+            bottom: 16mm;
             left: 4mm;
         }
 
