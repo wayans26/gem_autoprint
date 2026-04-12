@@ -63,24 +63,21 @@
         }
 
         .name {
-            margin-bottom: 0.5mm;
-            font-size: 12pt;
+            margin-bottom: 0.5mm font-size: 12pt;
             font-weight: 700;
             line-height: 0.2;
             text-align: center;
         }
 
         .job {
-            margin-bottom: 0.5mm;
-            font-size: 12pt;
+            margin-bottom: 0.5mm font-size: 12pt;
             font-weight: 700;
             line-height: 0.2;
             text-align: center;
         }
 
         .company {
-            margin-bottom: 0.5mm;
-            font-size: 12pt;
+            margin-bottom: 0.5mm font-size: 12pt;
             font-weight: 700;
             line-height: 0.2;
             text-align: center;
