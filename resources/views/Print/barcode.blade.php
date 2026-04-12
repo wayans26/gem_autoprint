@@ -28,7 +28,7 @@
 
         .safe-area {
             position: absolute;
-            top: 4mm;
+            top: 8mm;
             right: 4mm;
             bottom: 4mm;
             left: 4mm;
