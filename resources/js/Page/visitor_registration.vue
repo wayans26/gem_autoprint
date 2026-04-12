@@ -217,8 +217,8 @@ export default {
 
                     this.cfg = qz.configs.create(this.printer_name, {
                         size: {
-                            width: 104.1,
-                            height: 76.2,
+                            width: 102,
+                            height: 76,
                         },
                         units: 'mm',
                         orientation: 'portrait',
