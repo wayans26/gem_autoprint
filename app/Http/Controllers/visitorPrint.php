@@ -102,7 +102,7 @@ class visitorPrint extends Controller
             'IsPrinted' => 1,
             'LastCheckinLocation'   => "AP"
         ]);
-        $data_print = generatePrint::PPLB($name, $job, $visitor->Company, $visitor->Barcode);
+        $data_print = generatePrint::PDFPPLB($name, $job, $visitor->Company, $visitor->Barcode);
         return responseMessage::responseMessageWithData(1, "Success", 200, array(
             'data_print' => $data_print,
             'isPrinted'  => $isPrinted

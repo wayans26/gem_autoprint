@@ -112,7 +112,7 @@ class registerController extends Controller
 
         sendEmail::sendEmailRegistration($req, $barcode, $exhibition, $sub_exhibitions);
 
-        $data_print = generatePrint::PPLB($req->name, $req->title, $req->company, $barcode);
+        $data_print = generatePrint::PDFPPLB($req->name, $req->title, $req->company, $barcode);
 
         // dd($data_print);
 
