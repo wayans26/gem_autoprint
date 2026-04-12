@@ -106,9 +106,9 @@ class generatePrint
         $urlQr = "data:image/png;base64," . base64_encode($qrcode);
         // dd($urlQr);
         $pdf = Pdf::loadView('Print.barcode', [
-            'nama'  => $name,
-            'job'   => $title,
-            'company' => $company,
+            'nama'  => Str::upper($name),
+            'job'   => Str::upper($title),
+            'company' => Stf::upper($company),
             'barcodeSvg' => "data:image/png;base64," . base64_encode($qrcode),
         ])->setPaper([
             0,
