@@ -7,6 +7,7 @@
         </div>
         <div class="card-body">
             <p>Status : {{ status }}</p>
+            <p>Printer Name : {{ printer_name }}</p>
             <div class="form-group">
                 <label for="input-1">Printers</label>
                 <v-select class="form-control" placeholder="Select an Printer Name" :options="list_printer"
@@ -31,6 +32,7 @@ export default {
             // Printer
             status: "Printer Not Connected",
             printer_name: "",
+            saved_printed: localStorage.getItem("printer_name") ?? "",
             list_printer: [],
             connected: false,
             connecting: false,
@@ -145,6 +147,7 @@ export default {
                 return;
             }
             localStorage.setItem("printer_name", this.printer_name);
+            this.saved_printed = this.printer_name;
             swalNotif.success("Printer Setting Updated");
         }
 

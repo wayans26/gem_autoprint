@@ -66,13 +66,12 @@
                     </div>
                 </div>
                 <p class="text-mute">{{ status }} | {{ printer_name }}</p>
-                <button type="button" class="btn btn-primary ml-1" @click="launchQzTray" v-show="!connected">Launch
-                    Printer</button>
+                <!-- <button type="button" class="btn btn-primary ml-1" @click="launchQzTray" v-show="!connected">Launch
+                    Printer</button> -->
                 <button type="button" class="btn btn-primary ml-1" @click="connectQzTray" v-show="!connected">Connect
                     Printer</button>
-                <button type="submit" class="btn btn-primary ml-1" @click="connectQzTray"
-                    v-show="connected">Register</button>
-                <button type="submit" class="btn btn-primary ml-1" @click="testPrint">Test Print</button>
+                <button type="submit" class="btn btn-primary ml-1" v-show="connected">Register</button>
+                <!-- <button type="submit" class="btn btn-primary ml-1" @click="testPrint">Test Print</button> -->
             </form>
         </div>
     </div>
