@@ -31,7 +31,7 @@
             position: absolute;
             top: 12mm;
             right: 4mm;
-            bottom: 16mm;
+            bottom: 12mm;
             left: 4mm;
         }
 
