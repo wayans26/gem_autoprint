@@ -13,8 +13,8 @@
         body {
             margin: 0;
             padding: 0;
-            width: 100%;
-            height: 100%;
+            width: 104mm;
+            height: 76mm;
             background: #ffffff;
             color: #000000;
             font-family: DejaVu Sans, sans-serif;
