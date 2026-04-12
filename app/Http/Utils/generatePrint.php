@@ -6,6 +6,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Str;
 use Picqer\Barcode\Renderers\SvgRenderer;
 use Picqer\Barcode\Types\TypeCode128;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class generatePrint
 {
@@ -90,17 +91,22 @@ class generatePrint
 
     public static function PDFPPLB($name, $title, $company, $barcode)
     {
-        $barcodeSvg = (new TypeCode128())->getBarcode($barcode);
-        $renderer = new SvgRenderer();
-        $renderer->setSvgType($renderer::TYPE_SVG_INLINE);
-        $barcodeSvgRendered = $renderer->render($barcodeSvg, 360, 70);
+        // $barcodeSvg = (new TypeCode128())->getBarcode($barcode);
+        // $renderer = new SvgRenderer();
+        // $renderer->setSvgType($renderer::TYPE_SVG_INLINE);
+        // $barcodeSvgRendered = $renderer->render($barcodeSvg, 360, 70);
+        $qrcode = QrCode::format('svg')
+            ->size(220)
+            ->margin(1)
+            ->errorCorrection('H')
+            ->generate($barcode);
         $widthMM = 104.1;
         $heightMM = 76.2;
         $pdf = Pdf::loadView('Print.barcode', [
             'nama'  => $name,
             'job'   => $title,
             'company' => $company,
-            'barcodeSvg' => $barcodeSvgRendered,
+            'barcodeSvg' => $qrcode,
         ])->setPaper([
             0,
             0,

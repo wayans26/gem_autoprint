@@ -17,8 +17,30 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
+use Picqer\Barcode\Renderers\SvgRenderer;
+use Picqer\Barcode\Types\TypeCodabar;
+use Picqer\Barcode\Types\TypeCode128;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use ZanySoft\Zip\Facades\Zip;
 
+
+Route::get('/test', function () {
+    // $barcodeSvg = (new TypeCode128())->getBarcode("YANAAAA");
+    // $renderer = new SvgRenderer();
+    // $renderer->setSvgType($renderer::TYPE_SVG_INLINE);
+    // $barcodeSvgRendered = $renderer->render($barcodeSvg, 360, 70);
+    $qrcode = QrCode::format('svg')
+        ->size(220)
+        ->margin(1)
+        ->errorCorrection('H')
+        ->generate("AAAA");
+    return view('Print.barcode',  [
+        'nama'  => "TEST",
+        'job'   => "Job",
+        'company' => "COMPANY",
+        'barcodeSvg' => $qrcode,
+    ]);
+});
 
 Route::get('/', function (Request $req) {
     // dd(Hash::make("admin"));
