@@ -123,7 +123,7 @@ class registerController extends Controller
 
 
         // $data_print = generatePrint::PPLB("TEST", "TEST", "TEST", "oiuytghjkiuytghjkiuy");
-        $data_print = generatePrint::PDFPPLB("TEST", "TEST", "TEST", "oiuytghjkiuytghjkiuy");
+        $data_print = generatePrint::PDFPPLB("TEST", "TEST", "TEST PRINTER WAYAN AJAH DEH WHAHAHAH WAYAN PRINTER COMPANY HAHAHA TEXT", "oiuytghjkiuytghjkiuy");
 
         // dd($data_print);
 
