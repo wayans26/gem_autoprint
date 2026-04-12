@@ -48,33 +48,34 @@
             font-size: 20pt;
             font-weight: 700;
             line-height: 1.15;
-            margin-bottom: 3mm;
+            margin-bottom: 0.5mm;
         }
 
         .job {
-            font-size: 13pt;
+            font-size: 12pt;
             font-weight: 700;
             line-height: 1.2;
-            margin-bottom: 1.5mm;
+            margin-bottom: 0.5mm;
         }
 
         .company {
             font-size: 12pt;
+            font-weight: 700;
             line-height: 1.2;
-            margin-bottom: 4mm;
+            margin-bottom: 0.5mm;
         }
 
         .qrcode-wrapper {
-            width: 32mm;
-            height: 32mm;
-            margin: 0 auto 2mm auto;
+            width: 16mm;
+            height: 16mm;
+            margin: 0 auto 0.5mm auto;
             text-align: center;
         }
 
         .qrcode-image {
             display: block;
-            width: 32mm;
-            height: 32mm;
+            width: 16mm;
+            height: 16mm;
             margin: 0 auto;
         }
 
