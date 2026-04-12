@@ -15,9 +15,9 @@
             padding: 0;
             width: 100%;
             height: 100%;
-            font-family: DejaVu Sans, sans-serif;
-            color: #000000;
             background: #ffffff;
+            color: #000000;
+            font-family: DejaVu Sans, sans-serif;
         }
 
         .page {
@@ -26,64 +26,101 @@
             height: 100%;
         }
 
+        /* Area aman agar tidak terpotong */
         .safe-area {
             position: absolute;
-            top: 8mm;
+            top: 16mm;
             right: 4mm;
-            bottom: 4mm;
+            bottom: 16mm;
             left: 4mm;
+        }
+
+        /*
+         * Area teks memakai ruang di atas QR.
+         * bottom disisakan agar tidak tabrakan dengan QR block.
+         */
+        .text-area {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 40mm;
+            /* ruang khusus untuk QR + barcode text */
             display: table;
-            width: auto;
-            height: auto;
+            width: 100%;
             table-layout: fixed;
         }
 
-        .content {
+        .text-cell {
             display: table-cell;
             vertical-align: middle;
             text-align: center;
         }
 
+        .text-content {
+            width: 100%;
+            text-align: center;
+        }
+
         .name {
-            font-size: 20pt;
+            margin-bottom: 0.5mm font-size: 12pt;
             font-weight: 700;
-            line-height: 1.15;
-            margin-bottom: 0.5mm;
+            line-height: 1.2;
+            text-align: center;
         }
 
         .job {
-            font-size: 12pt;
+            margin-bottom: 0.5mm font-size: 12pt;
             font-weight: 700;
             line-height: 1.2;
-            margin-bottom: 0.5mm;
+            text-align: center;
         }
 
         .company {
-            font-size: 12pt;
+            margin-bottom: 0.5mm font-size: 12pt;
             font-weight: 700;
             line-height: 1.2;
-            margin-bottom: 0.5mm;
+            text-align: center;
+
+            /* supaya otomatis wrap */
+            white-space: normal;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-word;
+        }
+
+        /*
+         * QR block selalu di tengah bawah safe area
+         */
+        .qr-block {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            text-align: center;
         }
 
         .qrcode-wrapper {
-            width: 16mm;
-            height: 16mm;
-            margin: 0 auto 0.5mm auto;
+            width: 20mm;
+            height: 20mm;
+            margin: 0 auto 1mm auto;
             text-align: center;
         }
 
         .qrcode-image {
             display: block;
-            width: 16mm;
-            height: 16mm;
+            width: 20mm;
+            height: 20mm;
             margin: 0 auto;
         }
 
         .barcode-text {
+            margin: 0;
             font-size: 11pt;
             font-weight: 700;
-            letter-spacing: 0.6px;
             line-height: 1.2;
+            letter-spacing: 0.5px;
+            text-align: center;
         }
     </style>
 </head>
@@ -91,15 +128,23 @@
 <body>
     <div class="page">
         <div class="safe-area">
-            <div class="content">
-                <div class="name">{{ $nama }}</div>
-                <div class="job">{{ $job }}</div>
-                <div class="company">{{ $company }}</div>
 
+            <div class="text-area">
+                <div class="text-cell">
+                    <div class="text-content">
+                        <div class="name">{{ $nama }}</div>
+                        <div class="job">{{ $job }}</div>
+                        <div class="company">{{ $company }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="qr-block">
                 <div class="qrcode-wrapper">
                     <img src="{{ $barcodeSvg }}" alt="QR Code" class="qrcode-image">
                 </div>
             </div>
+
         </div>
     </div>
 </body>
