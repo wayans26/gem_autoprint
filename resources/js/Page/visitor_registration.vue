@@ -222,6 +222,7 @@ export default {
                         },
                         units: 'mm',
                         orientation: 'landscape',
+                        rotation: 90,
                         scaleContent: false,
                         copies: 1,
                         colorType: 'grayscale',
