@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Barcode Label</title>
+    <title>QR Label</title>
     <style>
         @page {
             margin: 0;
@@ -26,7 +26,6 @@
             height: 100%;
         }
 
-        /* Safe margin agar hasil print tidak mepet / terpotong */
         .safe-area {
             position: absolute;
             top: 4mm;
@@ -49,7 +48,7 @@
             font-size: 20pt;
             font-weight: 700;
             line-height: 1.15;
-            margin-bottom: 4mm;
+            margin-bottom: 3mm;
         }
 
         .job {
@@ -65,23 +64,24 @@
             margin-bottom: 4mm;
         }
 
-        .barcode-wrapper {
-            width: 76mm;
+        .qrcode-wrapper {
+            width: 32mm;
+            height: 32mm;
             margin: 0 auto 2mm auto;
             text-align: center;
         }
 
-        .barcode-wrapper svg {
+        .qrcode-image {
             display: block;
-            width: 100%;
-            height: 16mm;
+            width: 32mm;
+            height: 32mm;
             margin: 0 auto;
         }
 
         .barcode-text {
             font-size: 11pt;
             font-weight: 700;
-            letter-spacing: 0.7px;
+            letter-spacing: 0.6px;
             line-height: 1.2;
         }
     </style>
@@ -95,8 +95,8 @@
                 <div class="job">{{ $job }}</div>
                 <div class="company">{{ $company }}</div>
 
-                <div class="barcode-wrapper">
-                    {!! $barcodeSvg !!}
+                <div class="qrcode-wrapper">
+                    <img src="{{ $barcodeSvg }}" alt="QR Code" class="qrcode-image">
                 </div>
             </div>
         </div>

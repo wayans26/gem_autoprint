@@ -96,18 +96,20 @@ class generatePrint
         // $renderer = new SvgRenderer();
         // $renderer->setSvgType($renderer::TYPE_SVG_INLINE);
         // $barcodeSvgRendered = $renderer->render($barcodeSvg, 360, 70);
-        $qrcode = QrCode::format('svg')
+        $qrcode = QrCode::format('png')
             ->size(220)
             ->margin(1)
             ->errorCorrection('H')
             ->generate($barcode);
         $widthMM = 104.1;
         $heightMM = 76.2;
+        $urlQr = "data:image/png;base64," . base64_encode($qrcode);
+        // dd($urlQr);
         $pdf = Pdf::loadView('Print.barcode', [
             'nama'  => $name,
             'job'   => $title,
             'company' => $company,
-            'barcodeSvg' => $qrcode,
+            'barcodeSvg' => "data:image/png;base64," . base64_encode($qrcode),
         ])->setPaper([
             0,
             0,

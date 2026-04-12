@@ -29,11 +29,20 @@ Route::get('/test', function () {
     // $renderer = new SvgRenderer();
     // $renderer->setSvgType($renderer::TYPE_SVG_INLINE);
     // $barcodeSvgRendered = $renderer->render($barcodeSvg, 360, 70);
-    $qrcode = QrCode::format('svg')
+    // $qrcode = QrCode::format('svg')
+    //     ->size(220)
+    //     ->margin(1)
+    //     ->errorCorrection('H')
+    //     ->generate("AAAA");
+    $qrcode = QrCode::format('png')
         ->size(220)
         ->margin(1)
         ->errorCorrection('H')
-        ->generate("AAAA");
+        ->generate("YAN AHJAHG");
+    $widthMM = 104.1;
+    $heightMM = 76.2;
+    $urlQr = "data:image/png;base64," . base64_encode($qrcode);
+    dd($urlQr);
     return view('Print.barcode',  [
         'nama'  => "TEST",
         'job'   => "Job",
