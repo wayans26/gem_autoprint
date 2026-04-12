@@ -63,26 +63,23 @@
         }
 
         .name {
-            margin-bottom: 0.5mm;
-            font-size: 12pt;
+            margin-bottom: 0.5mm font-size: 12pt;
             font-weight: 700;
-            line-height: 0.5mm;
+            line-height: 1.2;
             text-align: center;
         }
 
         .job {
-            margin-bottom: 0.5mm;
-            font-size: 12pt;
+            margin-bottom: 0.5mm font-size: 12pt;
             font-weight: 700;
-            line-height: 0.5mm;
+            line-height: 1.2;
             text-align: center;
         }
 
         .company {
-            margin-bottom: 0.5mm;
-            font-size: 12pt;
+            margin-bottom: 0.5mm font-size: 12pt;
             font-weight: 700;
-            line-height: 0.5mm;
+            line-height: 1.2;
             text-align: center;
 
             /* supaya otomatis wrap */
@@ -99,7 +96,7 @@
             position: absolute;
             left: 0;
             right: 0;
-            bottom: 16mm;
+            bottom: 32mm;
             text-align: center;
         }
 
