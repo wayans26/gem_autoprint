@@ -29,7 +29,7 @@
         /* Area aman agar tidak terpotong */
         .safe-area {
             position: absolute;
-            top: 16mm;
+            top: 12mm;
             right: 4mm;
             bottom: 16mm;
             left: 4mm;
@@ -63,26 +63,26 @@
         }
 
         .name {
-            margin-bottom: 0.5mm;
+            margin-bottom: 0.1mm;
             font-size: 12pt;
             font-weight: 700;
-            line-height: 1;
+            line-height: 0.5mm;
             text-align: center;
         }
 
         .job {
-            margin-bottom: 0.5mm;
+            margin-bottom: 0.1mm;
             font-size: 12pt;
             font-weight: 700;
-            line-height: 1;
+            line-height: 0.5mm;
             text-align: center;
         }
 
         .company {
-            margin-bottom: 0.5mm;
+            margin-bottom: 0.1mm;
             font-size: 12pt;
             font-weight: 700;
-            line-height: 1;
+            line-height: 0.5mm;
             text-align: center;
 
             /* supaya otomatis wrap */
