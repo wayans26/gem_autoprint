@@ -99,7 +99,7 @@
             position: absolute;
             left: 0;
             right: 0;
-            bottom: 24mm;
+            bottom: 28mm;
             text-align: center;
         }
 
