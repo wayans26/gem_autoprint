@@ -108,7 +108,7 @@ class generatePrint
         $pdf = Pdf::loadView('Print.barcode', [
             'nama'  => Str::upper($name),
             'job'   => Str::upper($title),
-            'company' => Stf::upper($company),
+            'company' => Str::upper($company),
             'barcodeSvg' => "data:image/png;base64," . base64_encode($qrcode),
         ])->setPaper([
             0,
