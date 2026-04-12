@@ -409,8 +409,8 @@ export default {
             }).then(async res => {
                 if (res.data.status == 1) {
                     vm.data_print = res.data.data;
-                    // await vm.print();
-                    await vm.printPdf();
+                    await vm.print();
+                    // await vm.printPdf();
                 } else {
                     swalNotif.error(res.data.message);
                 }
@@ -430,7 +430,8 @@ export default {
             }).then(async res => {
                 if (res.data.status == 1) {
                     vm.data_print = res.data.data;
-                    await vm.print();
+                    // await vm.print();
+                    await vm.printPdf();
                 } else {
                     swalNotif.error(res.data.message);
                 }
