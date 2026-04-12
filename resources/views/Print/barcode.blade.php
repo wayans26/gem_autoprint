@@ -29,7 +29,7 @@
         /* Area aman agar tidak terpotong */
         .safe-area {
             position: absolute;
-            top: 12mm;
+            top: 16mm;
             right: 4mm;
             bottom: 16mm;
             left: 4mm;
@@ -66,7 +66,7 @@
             margin-bottom: 0.5mm;
             font-size: 12pt;
             font-weight: 700;
-            line-height: 1.2;
+            line-height: 0.2;
             text-align: center;
         }
 
@@ -74,7 +74,7 @@
             margin-bottom: 0.5mm;
             font-size: 12pt;
             font-weight: 700;
-            line-height: 1.2;
+            line-height: 0.2;
             text-align: center;
         }
 
@@ -82,7 +82,7 @@
             margin-bottom: 0.5mm;
             font-size: 12pt;
             font-weight: 700;
-            line-height: 1.2;
+            line-height: 0.2;
             text-align: center;
 
             /* supaya otomatis wrap */
@@ -99,7 +99,7 @@
             position: absolute;
             left: 0;
             right: 0;
-            bottom: 30mm;
+            bottom: 32mm;
             text-align: center;
         }
 
