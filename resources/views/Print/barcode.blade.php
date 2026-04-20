@@ -29,7 +29,7 @@
         /* Area aman agar tidak terpotong */
         .safe-area {
             position: absolute;
-            top: 12mm;
+            top: 16mm;
             right: 4mm;
             bottom: 16mm;
             left: 4mm;
@@ -99,7 +99,7 @@
             position: absolute;
             left: 0;
             right: 0;
-            bottom: 28mm;
+            bottom: 22mm;
             text-align: center;
         }
 
