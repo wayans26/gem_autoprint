@@ -85,7 +85,7 @@
             line-height: 0.75;
             text-align: center;
 
-            /* supaya otomatis wrap */
+            /* supaya otomatis wrap  */
             white-space: normal;
             word-wrap: break-word;
             overflow-wrap: break-word;
