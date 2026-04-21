@@ -70,6 +70,13 @@ class registerController extends Controller
         if (empty($sub_exhibitions)) {
             return responseMessage::responseMessage(0, "Sub Exhibition not found", 200);
         }
+
+        if (registration::where([
+            'SubExhibition' => $sub_exhibitions->idsubexhibitions,
+            'Email'         => $req->email
+        ])->exists()) {
+            return responseMessage::responseMessage(0, "Email already registered", 200);
+        }
         $barcode = $exhibition->type . $exhibition->idexhibitions . "-" . makeid::createId(6);
 
 
